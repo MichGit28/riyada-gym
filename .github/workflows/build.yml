@@ -36,7 +36,7 @@ jobs:
         curl https://pyenv.run | bash
     - name: Build and Test with Flutter
       run: |
-        curl -s https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz | tar xf -
+        curl -s https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz | tar xf -
         export PATH=$PATH:~/flutter/bin
         flutter channel stable
         flutter upgrade

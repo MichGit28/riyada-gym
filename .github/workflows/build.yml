@@ -34,11 +34,21 @@ jobs:
         sudo apt-get -y install libffi-dev && \
         sudo apt-get -y install liblzma-dev && \
         curl https://pyenv.run | bash
+        
     - name: Install Flutter
       uses: subosito/flutter-action@v1
       with:
         channel: 'stable'
         
+    - name: Install Android SDK
+      run: |
+        wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+        unzip commandlinetools-linux-7583922_latest.zip -d cmdline-tools
+        mv cmdline-tools /usr/local/lib/android/sdk/
+        export ANDROID_HOME=/usr/local/lib/android/sdk/
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools/bin
+        yes | sdkmanager --licenses
+
     - name: Accept Android Licenses
       run: yes | sdkmanager --licenses
     - name: Install Linux Development Dependencies

@@ -1,0 +1,56 @@
+name: Build, Test and Deploy
+on:
+  push:
+    branches: [main]  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && \
+        sudo apt-get -y install git && \
+        sudo apt-get -y install make && \
+        sudo apt-get -y install build-essential && \
+        sudo apt-get -y install curl && \
+        sudo apt-get -y install libssl-dev && \
+        sudo apt-get -y install zlib1g-dev && \
+        sudo apt-get -y install libbz2-dev && \
+        sudo apt-get -y install libreadline-dev && \
+        sudo apt-get -y install libsqlite3-dev && \
+        sudo apt-get -y install wget && \
+        sudo apt-get -y install llvm && \
+        sudo apt-get -y install libncurses5-dev && \
+        sudo apt-get -y install xz-utils && \
+        sudo apt-get -y install tk-dev && \
+        sudo apt-get -y install libxml2-dev && \
+        sudo apt-get -y install libxmlsec1-dev && \
+        sudo apt-get -y install libffi-dev && \
+        sudo apt-get -y install liblzma-dev && \
+        curl https://pyenv.run | bas
+    - name: Build and Test with Flutter
+      run: |
+        curl -s https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz | tar xf -
+        export PATH=$PATH:~/flutter/bin
+        flutter channel stable
+        flutter upgrade
+        flutter doctor -v
+        flutter pub get
+        flutter test
+        
+  #deploy the apllication to firebase
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Firebase
+      uses: w9jds/firebase-action@master
+      with:
+        args: deploy --only hosting
+

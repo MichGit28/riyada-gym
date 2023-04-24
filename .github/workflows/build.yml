@@ -33,7 +33,7 @@ jobs:
         sudo apt-get -y install libxmlsec1-dev && \
         sudo apt-get -y install libffi-dev && \
         sudo apt-get -y install liblzma-dev && \
-        curl https://pyenv.run | bas
+        curl https://pyenv.run | bash
     - name: Build and Test with Flutter
       run: |
         curl -s https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz | tar xf -

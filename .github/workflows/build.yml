@@ -37,7 +37,7 @@ jobs:
     - name: Build and Test with Flutter
       run: |
         curl -s https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_2.8.1-stable.tar.xz | tar xfJ -
-        export PATH=$PATH:~/flutter/bin
+        export PATH=$PATH:$HOME/flutter/bin:$HOME/flutter/.pub-cache/bin
         flutter channel stable
         flutter upgrade
         flutter doctor -v

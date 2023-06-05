@@ -19,5 +19,5 @@ class TColor {
   static Color get black => const Color(0xff1D1617);
   static Color get grey => const Color(0xff786F72);
   static Color get white => Colors.white;
-  static Color get lightGrey => Color.fromARGB(255, 229, 232, 232);
+  static Color get lightGrey => const Color.fromARGB(255, 229, 232, 232);
 }

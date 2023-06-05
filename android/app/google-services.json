@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "709323638680",
+    "project_id": "riyadagym",
+    "storage_bucket": "riyadagym.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709323638680:android:53fe1d3b4dd6a686858ded",
+        "android_client_info": {
+          "package_name": "com.example.riyada_gym"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1PEas0KmxVN833xN0SbNHrnlicTc6u0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

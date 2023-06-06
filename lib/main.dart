@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
-import 'package:riyada_gym/view/login/signup_view.dart';
 import 'package:riyada_gym/view/on_boarding/started_view.dart';
-import 'view/on_boarding/on_boarding_view.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-// void main() {
-//   runApp(const MyApp());
-// }
-
+// using async here to make sure that the app is initialized before running
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

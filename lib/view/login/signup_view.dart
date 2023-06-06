@@ -89,6 +89,8 @@ class _SignUpViewState extends State<SignUpView> {
 // }
 
   void _submitForm() {
+    print(
+        "Submit form button clicked"); // Print statement to check if the function is being called
     if (formKey.currentState!.validate()) {
       final firstName = firstNameController.text;
       final lastName = lastNameController.text;
@@ -104,6 +106,7 @@ class _SignUpViewState extends State<SignUpView> {
         }).then((_) {
           if (isValidEmail(email)) {
             Future.delayed(Duration.zero, () {
+              print("Navigating to CompleteProfileView");
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -120,6 +123,22 @@ class _SignUpViewState extends State<SignUpView> {
       }
     }
   }
+
+  // void showInvalidEmailDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: const Text('Invalid Email'),
+  //       content: const Text('Please enter a valid email address.'),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: const Text('OK'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   void showInvalidEmailDialog() {
     showDialog(

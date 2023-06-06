@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/on_boarding_page.dart';
 
@@ -15,11 +16,10 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   int selectPage = 0;
 
   // this is the page controller that will be used to scroll through the pages
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _pageController.addListener(() {
@@ -122,7 +122,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                         setState(() {});
                       } else {
                         // if we are on the last page -> Open Welcome Screen
-                        print("Open Welcome Screen");
+                        Logger();
                         Navigator.push(
                             context,
                             MaterialPageRoute(

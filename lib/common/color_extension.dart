@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 // this class is used to define the color scheme of the app
 class TColor {
   // this is the primary color of the app
-  static Color get primaryColor1 => const Color(0xff92A3FD);
+  static Color get primaryColor1 => Color.fromRGBO(146, 163, 253, 1);
   static Color get primaryColor2 => const Color(0xff9DCEFF);
 
   // this is the secondary color of the app
-  static Color get secondaryColor1 => const Color(0xffC58BF2);
+  static Color get secondaryColor1 => Color.fromRGBO(197, 139, 242, 1);
   static Color get secondaryColor2 => const Color(0xffEEA4CE);
 
   // we use this to get all the primary and secondary colors

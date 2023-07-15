@@ -23,7 +23,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
     super.initState();
 
     _pageController.addListener(() {
-      selectPage = _pageController.page!.round() ?? 0;
+      selectPage = (_pageController.page?.round() ?? 0);
 
       setState(() {});
     });
@@ -34,25 +34,25 @@ class _OnBoardingViewState extends State<OnBoardingView> {
     {
       "title": "Track Your Goals",
       "subtitle":
-          "Don't worry if you have trouble determining your goals, We can help you determine and track your goals",
+          "Don't worry if you have trouble determining your goals, we can help you determine and track your goals",
       "image": "assets/img/onBoard1.png"
     },
     {
-      "title": "Get Burn",
+      "title": "Keep on Burning",
       "subtitle":
-          "Let’s keep burning, to achive yours goals, it hurts only temporarily, if you give up now you will be in pain forever",
+          "Let’s keep burning to achive yours goals. It only hurts temporarily, if you give up now you will be in pain forever",
       "image": "assets/img/onBoard2.png"
     },
     {
       "title": "Eat Well",
       "subtitle":
-          "Let's start a healthy lifestyle with us, we can determine your diet every day. healthy eating is fun",
+          "Let's start a healthy lifestyle with us, we can determine your diet every day. Healthy eating is fun!",
       "image": "assets/img/onBoard3.png"
     },
     {
       "title": "Improve Sleep\nQuality",
       "subtitle":
-          "Improve the quality of your sleep with us, good quality sleep can bring a good mood in the morning",
+          "Improve the quality of your sleep with us. Good quality sleep can bring a good mood in the morning",
       "image": "assets/img/onBoard4.png"
     },
   ];

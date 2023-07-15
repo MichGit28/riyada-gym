@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/round_button.dart';
 import 'package:riyada_gym/view/login/complete_profile.dart';
+import 'package:riyada_gym/view/login/login_view.dart';
 import '../../common_widget/round_textfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // this class is used to sign up the user to the app
 class SignUpView extends StatefulWidget {
@@ -17,128 +19,129 @@ class SignUpView extends StatefulWidget {
 class _SignUpViewState extends State<SignUpView> {
   // this logger is used to print the logs to the console
   final Logger logger = Logger();
+  // this variable is used to control the Privacy Policy checkbox
+  bool isChecked = false;
+  // this variable is used to control the visibility of the password
+  bool obscurePassword = true;
+  // these attributes are used to control the text fields
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  bool isChecked = false;
+  // this key is used to validate the form meaning that all the fields are filled
   final formKey = GlobalKey<FormState>();
 
   bool isValidEmail(String email) {
-    // Use a regular expression pattern to validate the email format
-    // This is a basic pattern and may not cover all possible valid email formats
-    // You can modify the pattern based on your specific requirements
+    // this pattern is used to validate the email address
     const pattern = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$';
     final regex = RegExp(pattern);
     return regex.hasMatch(email);
   }
 
-  // void _submitForm() {
-  //   if (formKey.currentState!.validate()) {
-  //     // Extract the values from the text controllers and save them to the database
-  //     final firstName = firstNameController.text;
-  //     final lastName = lastNameController.text;
-  //     final email = emailController.text;
-  //     final password = passwordController.text;
-  //   }
-  // }
-
-// void _submitForm() async {
-//   if (formKey.currentState!.validate()) {
-//     final firstName = firstNameController.text;
-//     final lastName = lastNameController.text;
-//     final email = emailController.text;
-//     final password = passwordController.text;
-
-//     BuildContext dialogContext;
-
-//     try {
-//       await FirebaseFirestore.instance.collection('users').add({
-//         'firstName': firstName,
-//         'lastName': lastName,
-//         'email': email,
-//         'password': password,
-//       });
-
-//       if (isValidEmail(email)) {
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => const CompleteProfileView(),
-//           ),
-//         );
-//       } else {
-//         showDialog(
-//           context: dialogContext,
-//           builder: (context) => AlertDialog(
-//             title: const Text('Invalid Email'),
-//             content: const Text('Please enter a valid email address.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () => Navigator.pop(context),
-//                 child: const Text('OK'),
-//               ),
-//             ],
-//           ),
-//         );
-//       }
-//     } catch (e) {
-//       print('Error saving user data: $e');
-//     }
-//   }
-// }
-
-  void _submitForm() {
-    print(
-        "Submit form button clicked"); // Print statement to check if the function is being called
+  void register(BuildContext context) async {
     if (formKey.currentState!.validate()) {
-      final firstName = firstNameController.text;
-      final lastName = lastNameController.text;
-      final email = emailController.text;
-      final password = passwordController.text;
+      // this if statement is used to check if the checkbox is checked
+      if (!isChecked) {
+        // Show an error message if the checkbox is not checked
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Accept Terms'),
+            content: const Text(
+                'Please accept our Privacy Policy and Terms of Use.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
 
+      // Form is valid, proceed with registration
+      User? user;
       try {
-        FirebaseFirestore.instance.collection('users').add({
-          'firstName': firstName,
-          'lastName': lastName,
-          'email': email,
-          'password': password,
-        }).then((_) {
-          if (isValidEmail(email)) {
-            Future.delayed(Duration.zero, () {
-              print("Navigating to CompleteProfileView");
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CompleteProfileView(),
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+
+        user = userCredential.user;
+
+        if (user != null) {
+          // cser created successfully, now add the custom data in Firestore
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .set({
+            'firstName': firstNameController.text,
+            'lastName': lastNameController.text,
+            'email': emailController.text,
+          });
+
+          // create the user profile document in the "userProfiles" collection in Firestore
+          await FirebaseFirestore.instance
+              .collection('userProfiles')
+              .doc(user.uid)
+              .set({
+            'firstName': firstNameController.text,
+            'lastName': lastNameController.text,
+            'email': emailController.text,
+          });
+
+          // after the user data has been set, navigate to the next screen
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const CompleteProfileView(),
+              ),
+            );
+          });
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          //print('The password provided is too weak.');
+          // Show a dialog to the user
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Weak Password'),
+              content:
+                  const Text('The password you have provided is too weak.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
                 ),
-              );
-            });
-          } else {
-            showInvalidEmailDialog();
-          }
-        });
+              ],
+            ),
+          );
+        } else if (e.code == 'email-already-in-use') {
+          // print('The account already exists for that email.');
+          // Show a dialog to the user
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Email Already in Use'),
+              content:
+                  const Text('The email you have provided is already in use.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
       } catch (e) {
-        logger.e('Error saving user data: $e');
+        print(e);
       }
     }
   }
-
-  // void showInvalidEmailDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: const Text('Invalid Email'),
-  //       content: const Text('Please enter a valid email address.'),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.pop(context),
-  //           child: const Text('OK'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   void showInvalidEmailDialog() {
     showDialog(
@@ -178,7 +181,7 @@ class _SignUpViewState extends State<SignUpView> {
                     height: media.width * 0.09,
                   ),
                   Text(
-                    "Hey There,",
+                    "Hey there,",
                     style: TextStyle(color: TColor.grey, fontSize: 16),
                   ),
                   Text(
@@ -229,21 +232,31 @@ class _SignUpViewState extends State<SignUpView> {
                   RoundTextField(
                     hintText: "Password",
                     icon: "assets/img/lock.png",
-                    obscureText: true,
+                    obscureText: obscurePassword,
                     controller: passwordController,
-                    rightIcon: TextButton(
-                      onPressed: () {},
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: 20,
-                        height: 20,
-                        child: Image.asset(
-                          "assets/img/show_password.png",
-                          width: 20,
-                          height: 20,
-                          fit: BoxFit.contain,
-                          color: TColor.grey,
-                        ),
+                    rightIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                      // child: Container(
+                      //   alignment: Alignment.center,
+                      //   width: 20,
+                      //   height: 20,
+                      //   child: Image.asset(
+                      //     "assets/img/show_password.png",
+                      //     width: 20,
+                      //     height: 20,
+                      //     fit: BoxFit.contain,
+                      //     color: TColor.grey,
+                      //   ),
+                      // ),
+                      icon: Icon(
+                        obscurePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: TColor.grey,
                       ),
                     ),
                   ),
@@ -269,7 +282,7 @@ class _SignUpViewState extends State<SignUpView> {
                         // we use Expanded to make the text take the remaining space
                         Expanded(
                           child: Text(
-                            "By continuing you accept our Privacy Policy and\nTerms of Use",
+                            "By continuing you accept our Privacy Policy and Terms of Use",
                             style: TextStyle(color: TColor.grey, fontSize: 12),
                           ),
                         ),
@@ -279,8 +292,8 @@ class _SignUpViewState extends State<SignUpView> {
                   SizedBox(
                     height: media.width * 0.4,
                   ),
-                  RoundButton(title: "Register", onPressed: _submitForm),
-
+                  RoundButton(
+                      title: "Register", onPressed: () => register(context)),
                   SizedBox(
                     height: media.width * 0.04,
                   ),
@@ -359,7 +372,14 @@ class _SignUpViewState extends State<SignUpView> {
                     ],
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Navigate to LoginView when clicked on Login text
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginView(),
+                        ),
+                      );
+                    },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -7,9 +7,14 @@ class RoundButton extends StatelessWidget {
   final String title;
   final RoundButtonType type;
   final VoidCallback onPressed;
+  final FontWeight fontWeight;
+  final double fontSize;
+
   const RoundButton(
       {super.key,
       required this.title,
+      this.fontWeight = FontWeight.w700,
+      this.fontSize = 16,
       this.type = RoundButtonType.bgGradient,
       required this.onPressed});
 

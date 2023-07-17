@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/round_button.dart';
+import 'package:riyada_gym/view/login/login_view.dart';
 import '../../common_widget/round_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -60,7 +61,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CompleteProfileView()),
+          MaterialPageRoute(builder: (context) => const LoginView()),
         );
       });
     } else {
@@ -340,7 +341,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                   context); // Call the updateProfileData method
                               return;
                             } else {
-                              // SnackBar is used to show the error message to the user if any of the fields are empty
+                              // SnackBar is used to show the error message to the user
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content:

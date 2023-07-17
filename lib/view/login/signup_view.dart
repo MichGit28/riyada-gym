@@ -213,7 +213,7 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
                   RoundTextField(
                     hintText: "Email",
-                    icon: "assets/img/message.png",
+                    icon: "assets/img/email.png",
                     keyboardType: TextInputType.emailAddress,
                     controller: emailController,
                     validator: (value) {
@@ -240,18 +240,6 @@ class _SignUpViewState extends State<SignUpView> {
                           obscurePassword = !obscurePassword;
                         });
                       },
-                      // child: Container(
-                      //   alignment: Alignment.center,
-                      //   width: 20,
-                      //   height: 20,
-                      //   child: Image.asset(
-                      //     "assets/img/show_password.png",
-                      //     width: 20,
-                      //     height: 20,
-                      //     fit: BoxFit.contain,
-                      //     color: TColor.grey,
-                      //   ),
-                      // ),
                       icon: Icon(
                         obscurePassword
                             ? Icons.visibility

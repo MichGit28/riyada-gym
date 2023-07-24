@@ -72,15 +72,8 @@ class _SignUpViewState extends State<SignUpView> {
         user = userCredential.user;
 
         if (user != null) {
-          // cser created successfully, now add the custom data in Firestore
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .set({
-            'firstName': firstNameController.text,
-            'lastName': lastNameController.text,
-            'email': emailController.text,
-          });
+          // update the user's display name and display it in HomeView
+          await user.updateDisplayName("${firstNameController.text}");
 
           // create the user profile document in the "userProfiles" collection in Firestore
           await FirebaseFirestore.instance
@@ -159,6 +152,7 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
+  // We use this widget to build the UI of the screen
   @override
   Widget build(BuildContext context) {
     // this variable is used to get the size of the screen

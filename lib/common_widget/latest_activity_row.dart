@@ -1,6 +1,7 @@
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:flutter/material.dart';
 
+// latest activity row class to set the latest activity in the profile view.
 class LatestActivityRow extends StatelessWidget {
   final Map wObj;
   const LatestActivityRow({super.key, required this.wObj});

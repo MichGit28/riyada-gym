@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/view/login/complete_profile.dart';
+import 'package:riyada_gym/view/login/login_view.dart';
+import 'package:riyada_gym/view/login/signup_view.dart';
+import 'package:riyada_gym/view/login/what_your_goal_view.dart';
+import 'package:riyada_gym/view/main_tab/main_tab_view.dart';
 import 'package:riyada_gym/view/on_boarding/started_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';

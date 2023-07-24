@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/round_button.dart';
 import 'package:riyada_gym/view/login/login_view.dart';
+import 'package:riyada_gym/view/login/what_your_goal_view.dart';
 import '../../common_widget/round_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -61,7 +62,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const LoginView()),
+          MaterialPageRoute(builder: (context) => const WhatYourGoalView()),
         );
       });
     } else {
@@ -131,7 +132,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                     .map((name) => DropdownMenuItem(
                                           value: name,
                                           child: Text(
-                                            name.isNotEmpty ? name : "Binary",
+                                            name.isNotEmpty ? name : "Other",
                                             style: TextStyle(
                                               color: TColor.grey,
                                               fontSize: 14,
@@ -172,7 +173,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                               ),
                               Expanded(
                                 child: Text(
-                                  gender ?? 'Choose Gender',
+                                  gender,
                                   style: TextStyle(
                                     color: TColor.grey,
                                     fontSize: 14,
@@ -210,7 +211,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                             decoration: InputDecoration(
                               hintText: "Date of Birth",
                               prefixIcon: Image.asset(
-                                "assets/img/calendar.png",
+                                "assets/img/date.png",
                                 width: 20,
                                 height: 20,
                               ),

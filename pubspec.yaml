@@ -39,11 +39,16 @@ dependencies:
   fl_chart: ^0.63.0
   simple_animation_progress_bar: ^1.6.0
   simple_circular_progress_bar: ^1.0.2
+  readmore: any
+  calendar_agenda: any
+  scrollable_positioned_list: ^0.2.0-nullsafety.0
+  carousel_slider: ^4.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  intl: ^0.18.1
+  intl: ^0.17.0
+  animated_toggle_switch: ^0.7.0
 
 dev_dependencies:
   flutter_test:

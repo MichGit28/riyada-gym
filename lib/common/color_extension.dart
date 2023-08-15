@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class TColor {
   // this is the primary color of the app
   static Color get primaryColor1 => Color.fromRGBO(146, 163, 253, 1);
-  static Color get primaryColor2 => const Color(0xff9DCEFF);
+  static Color get primaryColor2 => Color.fromRGBO(157, 206, 255, 1);
 
   // this is the secondary color of the app
   static Color get secondaryColor1 => Color.fromRGBO(197, 139, 242, 1);

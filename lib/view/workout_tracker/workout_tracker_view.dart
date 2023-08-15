@@ -1,5 +1,7 @@
 import 'package:riyada_gym/common/color_extension.dart';
-import 'package:riyada_gym/view/workout_tracker/workour_detail_view.dart';
+import 'package:riyada_gym/view/home/home_view.dart';
+import 'package:riyada_gym/view/main_tab/main_tab_view.dart';
+import 'package:riyada_gym/view/workout_tracker/workout_detail_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../common_widget/round_button.dart';
@@ -14,39 +16,39 @@ class WorkoutTrackerView extends StatefulWidget {
 }
 
 class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
-  List latestArr = [
-    {
-      "image": "assets/img/Workout1.png",
-      "title": "Fullbody Workout",
-      "time": "Today, 03:00pm"
-    },
-    {
-      "image": "assets/img/Workout2.png",
-      "title": "Upperbody Workout",
-      "time": "June 05, 02:00pm"
-    },
-  ];
+  // List latestArr = [
+  //   {
+  //     "image": "assets/img/Workout1.png",
+  //     "title": "Fullbody Workout",
+  //     "time": "Today, 03:00pm"
+  //   },
+  //   {
+  //     "image": "assets/img/Workout2.png",
+  //     "title": "Upperbody Workout",
+  //     "time": "June 05, 02:00pm"
+  //   },
+  // ];
 
-  List whatArr = [
-    {
-      "image": "assets/img/what_1.png",
-      "title": "Fullbody Workout",
-      "exercises": "11 Exercises",
-      "time": "32mins"
-    },
-    {
-      "image": "assets/img/what_2.png",
-      "title": "Lowebody Workout",
-      "exercises": "12 Exercises",
-      "time": "40mins"
-    },
-    {
-      "image": "assets/img/what_3.png",
-      "title": "AB Workout",
-      "exercises": "14 Exercises",
-      "time": "20mins"
-    }
-  ];
+  // List whatArr = [
+  //   {
+  //     "image": "assets/img/what_1.png",
+  //     "title": "Fullbody Workout",
+  //     "exercises": "11 Exercises",
+  //     "time": "32mins"
+  //   },
+  //   {
+  //     "image": "assets/img/what_2.png",
+  //     "title": "Lowebody Workout",
+  //     "exercises": "12 Exercises",
+  //     "time": "40mins"
+  //   },
+  //   {
+  //     "image": "assets/img/what_3.png",
+  //     "title": "AB Workout",
+  //     "exercises": "14 Exercises",
+  //     "time": "20mins"
+  //   }
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,8 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
               // pinned: true,
               leading: InkWell(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MainTabView()));
                 },
                 child: Container(
                   margin: const EdgeInsets.all(8),
@@ -89,26 +92,26 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                     fontSize: 16,
                     fontWeight: FontWeight.w700),
               ),
-              actions: [
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    margin: const EdgeInsets.all(8),
-                    height: 40,
-                    width: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: TColor.lightGrey,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Image.asset(
-                      "assets/img/more_btn.png",
-                      width: 15,
-                      height: 15,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                )
-              ],
+              // actions: [
+              //   InkWell(
+              //     onTap: () {},
+              //     child: Container(
+              //       margin: const EdgeInsets.all(8),
+              //       height: 40,
+              //       width: 40,
+              //       alignment: Alignment.center,
+              //       decoration: BoxDecoration(
+              //           color: TColor.lightGrey,
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: Image.asset(
+              //         "assets/img/more_btn.png",
+              //         width: 15,
+              //         height: 15,
+              //         fit: BoxFit.contain,
+              //       ),
+              //     ),
+              //   )
+              // ],
             ),
             SliverAppBar(
               backgroundColor: Colors.transparent,
@@ -255,102 +258,102 @@ class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Daily Workout Schedule",
-                          style: TextStyle(
-                              color: TColor.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        SizedBox(
-                          width: 70,
-                          height: 25,
-                          child: RoundButton(
-                            title: "Check",
-                            type: RoundButtonType.bgGradient,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            onPressed: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) =>
-                              //         const ActivityTrackerView(),
-                              //   ),
-                              // );
-                            },
-                          ),
-                        )
+                        // Text(
+                        //   "Daily Workout Schedule",
+                        //   style: TextStyle(
+                        //       color: TColor.black,
+                        //       fontSize: 14,
+                        //       fontWeight: FontWeight.w700),
+                        // ),
+                        // SizedBox(
+                        //   width: 70,
+                        //   height: 25,
+                        //   child: RoundButton(
+                        //     title: "Check",
+                        //     type: RoundButtonType.bgGradient,
+                        //     fontSize: 12,
+                        //     fontWeight: FontWeight.w400,
+                        //     onPressed: () {
+                        //       // Navigator.push(
+                        //       //   context,
+                        //       //   MaterialPageRoute(
+                        //       //     builder: (context) =>
+                        //       //         const ActivityTrackerView(),
+                        //       //   ),
+                        //       // );
+                        //     },
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
                   SizedBox(
                     height: media.width * 0.05,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Upcoming Workout",
-                        style: TextStyle(
-                            color: TColor.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "See More",
-                          style: TextStyle(
-                              color: TColor.grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700),
-                        ),
-                      )
-                    ],
-                  ),
-                  ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: latestArr.length,
-                      itemBuilder: (context, index) {
-                        var wObj = latestArr[index] as Map? ?? {};
-                        return UpcomingWorkoutRow(wObj: wObj);
-                      }),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       "Upcoming Workout",
+                  //       style: TextStyle(
+                  //           color: TColor.black,
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w700),
+                  //     ),
+                  //     TextButton(
+                  //       onPressed: () {},
+                  //       child: Text(
+                  //         "See More",
+                  //         style: TextStyle(
+                  //             color: TColor.grey,
+                  //             fontSize: 14,
+                  //             fontWeight: FontWeight.w700),
+                  //       ),
+                  //     )
+                  //   ],
+                  // ),
+                  // ListView.builder(
+                  //     padding: EdgeInsets.zero,
+                  //     physics: const NeverScrollableScrollPhysics(),
+                  //     shrinkWrap: true,
+                  //     itemCount: latestArr.length,
+                  //     itemBuilder: (context, index) {
+                  //       var wObj = latestArr[index] as Map? ?? {};
+                  //       return UpcomingWorkoutRow(wObj: wObj);
+                  //     }),
                   SizedBox(
                     height: media.width * 0.05,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "What Do You Want to Train",
-                        style: TextStyle(
-                            color: TColor.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                  ListView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: whatArr.length,
-                      itemBuilder: (context, index) {
-                        var wObj = whatArr[index] as Map? ?? {};
-                        return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => WorkoutDetailView(
-                                            dObj: wObj,
-                                          )));
-                            },
-                            child: WhatTrainRow(wObj: wObj));
-                      }),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       "What Do You Want to Train",
+                  //       style: TextStyle(
+                  //           color: TColor.black,
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w700),
+                  //     ),
+                  //   ],
+                  // ),
+                  // ListView.builder(
+                  //     padding: EdgeInsets.zero,
+                  //     physics: const NeverScrollableScrollPhysics(),
+                  //     shrinkWrap: true,
+                  //     itemCount: whatArr.length,
+                  //     itemBuilder: (context, index) {
+                  //       var wObj = whatArr[index] as Map? ?? {};
+                  //       return InkWell(
+                  //           // onTap: () {
+                  //           //   Navigator.push(
+                  //           //       context,
+                  //           //       MaterialPageRoute(
+                  //           //           builder: (context) => WorkoutDetailView(
+                  //           //                 dObj: wObj,
+                  //           //               )));
+                  //           // },
+                  //           child: WhatTrainRow(wObj: wObj));
+                  //     }),
                   SizedBox(
                     height: media.width * 0.1,
                   ),

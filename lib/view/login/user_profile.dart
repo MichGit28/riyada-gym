@@ -32,4 +32,17 @@ class UserProfile {
       userId: userId,
     );
   }
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      email: json['email'] as String,
+      gender: json['gender'] as String,
+      dateOfBirth: json['dateOfBirth'] as String,
+      height: json['height'] as String,
+      weight: json['weight'] as String,
+      userId: json['userId'] as String,
+    );
+  }
 }

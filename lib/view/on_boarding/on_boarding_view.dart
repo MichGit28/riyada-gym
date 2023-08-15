@@ -4,8 +4,6 @@ import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/on_boarding_page.dart';
 import 'package:riyada_gym/view/login/login_view.dart';
 
-import '../login/signup_view.dart';
-
 class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
 

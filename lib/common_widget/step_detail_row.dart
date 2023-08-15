@@ -45,7 +45,7 @@ class StepDetailRow extends StatelessWidget {
             ),
             if (!isLast)
               DottedDashedLine(
-                  height: 80,
+                  height: 60,
                   width: 0,
                   dashColor: TColor.secondaryColor1,
                   axis: Axis.vertical)
@@ -62,14 +62,14 @@ class StepDetailRow extends StatelessWidget {
               Text(
                 sObj["title"].toString(),
                 style: TextStyle(
-                  color: TColor.black,
+                  color: TColor.grey,
                   fontSize: 14,
                 ),
               ),
-              Text(
-                sObj["detail"].toString(),
-                style: TextStyle(color: TColor.grey, fontSize: 12),
-              ),
+              // Text(
+              //   sObj["detail"].toString(),
+              //   style: TextStyle(color: TColor.grey, fontSize: 12),
+              // ),
             ],
           ),
         )

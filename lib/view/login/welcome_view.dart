@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:riyada_gym/view/login/login_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widget/round_button.dart';
-import '../main_tab/main_tab_view.dart';
+//import '../main_tab/main_tab_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class WelcomeView extends StatefulWidget {
@@ -58,7 +59,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MainTabView()));
+                            builder: (context) => const LoginView()));
                   }),
             ],
           ),

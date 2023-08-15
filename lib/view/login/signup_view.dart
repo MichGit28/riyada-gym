@@ -86,7 +86,7 @@ class _SignUpViewState extends State<SignUpView> {
           });
 
           // after the user data has been set, navigate to the next screen
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => const CompleteProfileView(),

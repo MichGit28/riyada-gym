@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/round_button.dart';
-import 'package:riyada_gym/view/login/login_view.dart';
+//import 'package:riyada_gym/view/login/login_view.dart';
 import 'package:riyada_gym/view/login/what_your_goal_view.dart';
-import '../../common_widget/round_textfield.dart';
+//import '../../common_widget/round_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/scheduler.dart';
@@ -59,7 +59,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                   true)); // Use merge option to update only the specified fields
 
       // schedulerBinding is used to navigate to the next screen after the frame is rendered
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const WhatYourGoalView()),
@@ -336,6 +336,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                             if (dateController.text.isNotEmpty &&
                                 weightController.text.isNotEmpty &&
                                 heightController.text.isNotEmpty &&
+                                // ignore: unnecessary_null_comparison
                                 gender != null &&
                                 gender.isNotEmpty) {
                               updateProfileData(

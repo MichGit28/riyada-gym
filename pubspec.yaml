@@ -42,7 +42,8 @@ dependencies:
   readmore: any
   calendar_agenda: any
   scrollable_positioned_list: ^0.2.0-nullsafety.0
-  carousel_slider: ^4.2.1
+  carousel_slider: ^4.0.0
+  video_player: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -80,7 +81,17 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/imgMale/
+    - assets/imgFemale/
     - assets/img/
+    # - assets/videos/abs
+    # - assets/videos/back
+    # - assets/videos/arms
+    # - assets/videos/cardio
+    # - assets/videos/chest
+    # - assets/videos/fullBody
+    # - assets/videos/legs
+    # - assets/videos/abs/legRaise.mp4
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

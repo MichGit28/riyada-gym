@@ -112,26 +112,6 @@ class _ProfileViewState extends State<ProfileView> {
           style: TextStyle(
               color: TColor.black, fontSize: 20, fontWeight: FontWeight.w700),
         ),
-        actions: [
-          InkWell(
-            onTap: () {},
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              height: 40,
-              width: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: TColor.lightGrey,
-                  borderRadius: BorderRadius.circular(10)),
-              child: Image.asset(
-                "assets/img/more_btn.png",
-                width: 15,
-                height: 15,
-                fit: BoxFit.contain,
-              ),
-            ),
-          )
-        ],
       ),
       backgroundColor: TColor.white,
       body: SingleChildScrollView(
@@ -144,8 +124,7 @@ class _ProfileViewState extends State<ProfileView> {
                 children: [
                   //
                   FutureBuilder<UserProfile>(
-                    future:
-                        fetchUserProfile(), // previously created method to get UserProfile
+                    future: fetchUserProfile(),
                     builder: (BuildContext context,
                         AsyncSnapshot<UserProfile> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -205,13 +184,6 @@ class _ProfileViewState extends State<ProfileView> {
                             }
                           },
                         ),
-                        // Text(
-                        //   "Lose a Fat Program",
-                        //   style: TextStyle(
-                        //     color: TColor.grey,
-                        //     fontSize: 12,
-                        //   ),
-                        // )
                       ],
                     ),
                   ),

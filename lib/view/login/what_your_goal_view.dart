@@ -122,7 +122,7 @@ class _WhatYourGoalViewState extends State<WhatYourGoalView> {
                       fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  "It will help us to choose the best\nprogram for you",
+                  "It will help us choose the best\nprogram for you",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: TColor.grey, fontSize: 12),
                 ),

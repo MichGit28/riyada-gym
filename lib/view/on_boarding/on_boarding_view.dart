@@ -59,7 +59,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   @override
   Widget build(BuildContext context) {
     // this is the media query for the screen - we will use it to get the screen size
-    var media = MediaQuery.of(context).size;
+    //var media = MediaQuery.of(context).size;
     // this is the main widget for the screen - we will use it to build the UI
     return Scaffold(
       backgroundColor: TColor.white,

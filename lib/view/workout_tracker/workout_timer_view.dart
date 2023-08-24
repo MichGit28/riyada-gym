@@ -2,10 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/our_button.dart';
-import 'package:riyada_gym/common_widget/reset_button.dart';
 import 'dart:ui';
-
-import 'package:riyada_gym/common_widget/round_button.dart';
 
 class WorkoutTimerView extends StatefulWidget {
   WorkoutTimerView({Key? key}) : super(key: key);

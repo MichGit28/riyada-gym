@@ -2,13 +2,10 @@ import 'dart:async';
 
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
-import 'package:riyada_gym/view/workout_tracker/workout_timer_view.dart';
 import 'package:video_player/video_player.dart';
 import '../../common/color_extension.dart';
-import '../../common_widget/round_button.dart';
 import '../../common_widget/step_detail_row.dart';
 
 class ExercisesStepDetails extends StatefulWidget {
@@ -298,6 +295,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        // ignore: unnecessary_null_comparison
                         if (exerciseDetails != null)
                           Align(
                             alignment: Alignment.centerLeft,

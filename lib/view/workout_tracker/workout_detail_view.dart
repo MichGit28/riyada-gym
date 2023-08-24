@@ -6,7 +6,6 @@ import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/icon_title_next_row.dart';
 import 'package:riyada_gym/view/workout_tracker/exercises_step_details.dart';
 import 'package:flutter/material.dart';
-import 'package:riyada_gym/view/workout_tracker/workout_timer_view.dart';
 import '../../common_widget/exercises_set_section.dart';
 import 'package:intl/intl.dart';
 import '../../common_widget/start_workout_button.dart';

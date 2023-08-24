@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:riyada_gym/view/login/login_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widget/round_button.dart';
-//import '../main_tab/main_tab_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../main_tab/main_tab_view.dart';

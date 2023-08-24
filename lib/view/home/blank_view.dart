@@ -1,18 +1,18 @@
-import 'package:riyada_gym/common/color_extension.dart';
-import 'package:flutter/material.dart';
+// import 'package:riyada_gym/common/color_extension.dart';
+// import 'package:flutter/material.dart';
 
-class BlankView extends StatefulWidget {
-  const BlankView({super.key});
+// class BlankView extends StatefulWidget {
+//   const BlankView({super.key});
 
-  @override
-  State<BlankView> createState() => _BlankViewState();
-}
+//   @override
+//   State<BlankView> createState() => _BlankViewState();
+// }
 
-class _BlankViewState extends State<BlankView> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: TColor.white,
-    );
-  }
-}
+// class _BlankViewState extends State<BlankView> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: TColor.white,
+//     );
+//   }
+// }

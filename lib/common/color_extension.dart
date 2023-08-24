@@ -10,6 +10,11 @@ class TColor {
   static Color get secondaryColor1 => Color.fromRGBO(197, 139, 242, 1);
   static Color get secondaryColor2 => const Color(0xffEEA4CE);
 
+  // this is the third color of the app
+  static Color get thirdColor1 => Color.fromRGBO(43, 180, 132, 1);
+  static Color get thirdColor2 => Color.fromARGB(255, 42, 89, 105);
+  static Color get thirdColor3 => Color.fromARGB(255, 238, 121, 121);
+
   // we use this to get all the primary and secondary colors
   static List<Color> get primaryGradient => [primaryColor2, primaryColor1];
   static List<Color> get secondaryGradient =>

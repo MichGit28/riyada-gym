@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:riyada_gym/view/login/login_view.dart';
 import 'package:riyada_gym/view/main_tab/main_tab_view.dart';
 import 'package:riyada_gym/view/workout_tracker/workout_detail_view.dart';
+import '../../common_widget/dot_indicator.dart';
 import '../login/user_profile.dart';
 import '../main_tab/workout_service.dart';
 import 'dart:math' as math;
@@ -122,8 +123,6 @@ class _HomeViewState extends State<HomeView> {
     }).toList();
   }
 
-  final List<String> _weekdays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -152,27 +151,25 @@ class _HomeViewState extends State<HomeView> {
           ),
           title: Text(
             "Welcome Back ${user?.displayName}",
-            style: TextStyle(color: TColor.grey, fontSize: 16),
+            style: TextStyle(color: TColor.grey, fontSize: 18),
           ),
           bottom: TabBar(
-            labelColor: TColor.primaryColor1,
+            labelColor: TColor.black.withOpacity(0.7),
             unselectedLabelColor: TColor.black,
-            indicatorColor: TColor.primaryColor1,
+            indicatorColor: TColor.black.withOpacity(0.7),
             indicatorSize: TabBarIndicatorSize.label,
-            indicatorWeight: 2,
+            indicatorWeight: 0.000000000000001,
             labelStyle: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
             unselectedLabelStyle:
                 TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             tabs: [
-              Tab(text: 'Workouts'),
-              // Tab(text: 'Programs'),
+              Tab(text: 'Our Workouts'),
             ],
           ),
         ),
         body: TabBarView(
           children: [
             _buildWorkoutsTab(),
-            // _buildProgramsTab(),
           ],
         ),
       ),
@@ -186,29 +183,6 @@ class _HomeViewState extends State<HomeView> {
           padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            // week days are shown above the workout images
-            children: _weekdays.map((day) {
-              int index = _weekdays.indexOf(day);
-              return GestureDetector(
-                onTap: () {
-                  _pageController.animateToPage(
-                    index,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                child: Text(
-                  _weekdays[index],
-                  style: TextStyle(
-                    color: _currentPage == index
-                        ? TColor.primaryColor1
-                        : TColor.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-              );
-            }).toList(),
           ),
         ),
         Expanded(
@@ -232,7 +206,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  // this buildWorkoutCarouselItem function is used to build the workout images
   Widget _buildWorkoutCarouselItem(int index) {
     return FutureBuilder<Map<String, dynamic>>(future: () {
       String workoutId = workoutTypeMap[images[index]]!;
@@ -264,10 +237,9 @@ class _HomeViewState extends State<HomeView> {
         child: Column(
           children: [
             Text(
-              // <- Title goes here
               workoutData['title'],
               style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 18,
                   color: TColor.primaryColor1,
                   fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
@@ -281,6 +253,25 @@ class _HomeViewState extends State<HomeView> {
                 fit: BoxFit.fill,
               ),
             ),
+            SizedBox(height: 8), // You can adjust this value for spacing
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(images.length, (dotIndex) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  width: dotIndex == _currentPage ? 12.0 : 8.0,
+                  height: dotIndex == _currentPage ? 12.0 : 8.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: dotIndex == _currentPage
+                        ? TColor.primaryColor1
+                        : TColor.grey.withOpacity(0.5),
+                  ),
+                );
+              }),
+            ),
+            SizedBox(height: 8), // Adjust this value for spacing too
+            // Add description or other widgets below this line.
           ],
         ),
       );
@@ -344,7 +335,7 @@ class _HomeViewState extends State<HomeView> {
                     )
                   ],
                 ),
-                SizedBox(height: 50), // Spacer after equipment images
+                SizedBox(height: 40), // Spacer after equipment images
                 // Your "Select Workout" Button
                 ElevatedButton(
                   style: ButtonStyle(

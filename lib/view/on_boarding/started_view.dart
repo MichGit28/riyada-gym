@@ -16,7 +16,6 @@ class _StartedViewState extends State<StartedView> {
 
   @override
   Widget build(BuildContext context) {
-    // this variable is used to get the size of the screen
     var media = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: TColor.white,
@@ -31,11 +30,16 @@ class _StartedViewState extends State<StartedView> {
                 : null,
           ),
           child: Column(
-            // this is used to align the children in the center
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // this is used to add space between the children
               const Spacer(),
+              // Adding the image asset here
+              Image.asset(
+                'assets/imgMale/dumbbells.png',
+                width: 100, // You can adjust this as per your requirement
+                height: 100, // You can adjust this as per your requirement
+              ),
+              const SizedBox(height: 20), // Adding some space after the image
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -65,8 +69,6 @@ class _StartedViewState extends State<StartedView> {
                 ),
               ),
               const Spacer(),
-              // safe area is used to make sure that the widget is not behind the notch
-              // notch is the black area in the top of the screen
               SafeArea(
                 child: Padding(
                   padding:
@@ -77,19 +79,11 @@ class _StartedViewState extends State<StartedView> {
                         ? RoundButtonType.textGradient
                         : RoundButtonType.bgGradient,
                     onPressed: () {
-                      // if (isChangeColor) {
-                      // Go to Next Screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const OnBoardingView()),
                       );
-                      // } else {
-                      //   // Change Color
-                      //   setState(() {
-                      //     isChangeColor = true;
-                      //   });
-                      // }
                     },
                   ),
                 ),

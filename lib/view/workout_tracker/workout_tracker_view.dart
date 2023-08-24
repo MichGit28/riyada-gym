@@ -1,505 +1,750 @@
-import 'package:riyada_gym/common/color_extension.dart';
-import 'package:riyada_gym/view/home/home_view.dart';
-import 'package:riyada_gym/view/main_tab/main_tab_view.dart';
-import 'package:riyada_gym/view/workout_tracker/workout_detail_view.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../../common_widget/round_button.dart';
-import '../../common_widget/upcoming_workout_row.dart';
-import '../../common_widget/what_train_row.dart';
+import 'package:riyada_gym/common/app_colors.dart';
+import 'package:riyada_gym/common/color_extension.dart';
+// import 'package:riyada_gym/presentation/resources/app_resources.dart';
+import 'package:intl/intl.dart';
+import '../../common/colors_app.dart';
+import '../../common/dotted_line.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
-class WorkoutTrackerView extends StatefulWidget {
-  const WorkoutTrackerView({super.key});
+class WorkoutTracker extends StatefulWidget {
+  final String userID;
+
+  WorkoutTracker({required this.userID});
 
   @override
-  State<WorkoutTrackerView> createState() => _WorkoutTrackerViewState();
+  _WorkoutTrackerState createState() => _WorkoutTrackerState();
 }
 
-class _WorkoutTrackerViewState extends State<WorkoutTrackerView> {
-  // List latestArr = [
-  //   {
-  //     "image": "assets/img/Workout1.png",
-  //     "title": "Fullbody Workout",
-  //     "time": "Today, 03:00pm"
-  //   },
-  //   {
-  //     "image": "assets/img/Workout2.png",
-  //     "title": "Upperbody Workout",
-  //     "time": "June 05, 02:00pm"
-  //   },
-  // ];
+class _WorkoutTrackerState extends State<WorkoutTracker>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late Future<Map<String, dynamic>> userProfileData;
+  late Future<List<Map<String, dynamic>>> completedWorkouts;
+  late Future<Map<String, int>> completedWorkoutsCount;
 
-  // List whatArr = [
-  //   {
-  //     "image": "assets/img/what_1.png",
-  //     "title": "Fullbody Workout",
-  //     "exercises": "11 Exercises",
-  //     "time": "32mins"
-  //   },
-  //   {
-  //     "image": "assets/img/what_2.png",
-  //     "title": "Lowebody Workout",
-  //     "exercises": "12 Exercises",
-  //     "time": "40mins"
-  //   },
-  //   {
-  //     "image": "assets/img/what_3.png",
-  //     "title": "AB Workout",
-  //     "exercises": "14 Exercises",
-  //     "time": "20mins"
-  //   }
-  // ];
+  // For pie chart representation
+  Map<String, int> workoutCounts = {};
+  List<String> workoutTypes = [
+    'Abs Workout',
+    'Back Workout',
+    'Chest Workout',
+    'Legs Workout',
+    'Fullbody Workout',
+    'Biceps & Triceps',
+    'Cardio Workout'
+  ];
+  final List<Color> workoutColors = [
+    PColor.primaryColor1,
+    PColor.primaryColor2,
+    PColor.secondaryColor1,
+    PColor.secondaryColor2,
+    PColor.thirdColor1,
+    PColor.thirdColor2,
+    PColor.thirdColor3
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    userProfileData = FirebaseService(widget.userID).fetchUserProfile();
+    completedWorkouts =
+        FirebaseService(widget.userID).getCompletedWorkouts(widget.userID);
+    completedWorkoutsCount = FirebaseService(widget.userID)
+        .getCompletedWorkoutsCount(); // Add this line
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  List<PieChartSectionData> generatePieChartSections(
+      Map<String, int> totalTimeSpentData) {
+    List<PieChartSectionData> sections = [];
+    for (int i = 0; i < workoutTypes.length; i++) {
+      final workoutType = workoutTypes[i];
+      final time = totalTimeSpentData[workoutType] ?? 0;
+      if (time > 0) {
+        // Ensure we're only adding workouts with non-zero time
+        sections.add(
+          PieChartSectionData(
+            color: workoutColors[i],
+            value: time.toDouble(),
+            title: '${time.toString()}m', // Displaying time in seconds
+            radius: 50,
+            titleStyle: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xffffffff)),
+          ),
+        );
+      }
+    }
+    // Sorting sections by time (so that bigger pieces represent workouts with more time)
+    sections.sort((a, b) => b.value.compareTo(a.value));
+    return sections;
+  }
+
+  List<PieChartSectionData> showingSections(Map<String, int> workoutCounts) {
+    int totalWorkouts =
+        workoutCounts.values.fold(0, (prev, element) => prev + element);
+
+    if (totalWorkouts == 0) {
+      // If no workouts are present, just return an empty list
+      return [];
+    }
+
+    return List.generate(workoutTypes.length, (i) {
+      final workoutType = workoutTypes[i];
+      final count = workoutCounts[workoutType] ?? 0;
+      final percentage = (count / totalWorkouts) * 100;
+      return PieChartSectionData(
+        color: workoutColors[i],
+        value: percentage,
+        title: '${percentage.toStringAsFixed(1)}%',
+        radius: 50,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: AppColors.mainTextColor1,
+          shadows: [Shadow(color: Colors.black, blurRadius: 2)],
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(colors: TColor.primaryGradient)),
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              backgroundColor: Colors.transparent,
-              centerTitle: true,
-              elevation: 0,
-              // pinned: true,
-              leading: InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MainTabView()));
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(8),
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: TColor.lightGrey,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Image.asset(
-                    "assets/img/black_btn.png",
-                    width: 15,
-                    height: 15,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              title: Text(
-                "Workout Tracker",
-                style: TextStyle(
-                    color: TColor.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700),
-              ),
-              // actions: [
-              //   InkWell(
-              //     onTap: () {},
-              //     child: Container(
-              //       margin: const EdgeInsets.all(8),
-              //       height: 40,
-              //       width: 40,
-              //       alignment: Alignment.center,
-              //       decoration: BoxDecoration(
-              //           color: TColor.lightGrey,
-              //           borderRadius: BorderRadius.circular(10)),
-              //       child: Image.asset(
-              //         "assets/img/more_btn.png",
-              //         width: 15,
-              //         height: 15,
-              //         fit: BoxFit.contain,
-              //       ),
-              //     ),
-              //   )
-              // ],
-            ),
-            SliverAppBar(
-              backgroundColor: Colors.transparent,
-              centerTitle: true,
-              elevation: 0,
-              leadingWidth: 0,
-              leading: const SizedBox(),
-              expandedHeight: media.width * 0.5,
-              flexibleSpace: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                height: media.width * 0.5,
-                width: double.maxFinite,
-                child: LineChart(
-                  LineChartData(
-                    lineTouchData: LineTouchData(
-                      enabled: true,
-                      handleBuiltInTouches: false,
-                      touchCallback:
-                          (FlTouchEvent event, LineTouchResponse? response) {
-                        if (response == null || response.lineBarSpots == null) {
-                          return;
-                        }
-                        // if (event is FlTapUpEvent) {
-                        //   final spotIndex =
-                        //       response.lineBarSpots!.first.spotIndex;
-                        //   showingTooltipOnSpots.clear();
-                        //   setState(() {
-                        //     showingTooltipOnSpots.add(spotIndex);
-                        //   });
-                        // }
-                      },
-                      mouseCursorResolver:
-                          (FlTouchEvent event, LineTouchResponse? response) {
-                        if (response == null || response.lineBarSpots == null) {
-                          return SystemMouseCursors.basic;
-                        }
-                        return SystemMouseCursors.click;
-                      },
-                      getTouchedSpotIndicator:
-                          (LineChartBarData barData, List<int> spotIndexes) {
-                        return spotIndexes.map((index) {
-                          return TouchedSpotIndicatorData(
-                            FlLine(
-                              color: Colors.transparent,
-                            ),
-                            FlDotData(
-                              show: true,
-                              getDotPainter: (spot, percent, barData, index) =>
-                                  FlDotCirclePainter(
-                                radius: 3,
-                                color: Colors.white,
-                                strokeWidth: 3,
-                                strokeColor: TColor.secondaryColor1,
-                              ),
-                            ),
-                          );
-                        }).toList();
-                      },
-                      touchTooltipData: LineTouchTooltipData(
-                        tooltipBgColor: TColor.secondaryColor1,
-                        tooltipRoundedRadius: 20,
-                        getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
-                          return lineBarsSpot.map((lineBarSpot) {
-                            return LineTooltipItem(
-                              "${lineBarSpot.x.toInt()} mins ago",
-                              const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          }).toList();
-                        },
-                      ),
-                    ),
-                    lineBarsData: lineBarsData1,
-                    minY: -0.5,
-                    maxY: 110,
-                    titlesData: FlTitlesData(
-                        show: true,
-                        leftTitles: AxisTitles(),
-                        topTitles: AxisTitles(),
-                        bottomTitles: AxisTitles(
-                          sideTitles: bottomTitles,
-                        ),
-                        rightTitles: AxisTitles(
-                          sideTitles: rightTitles,
-                        )),
-                    gridData: FlGridData(
-                      show: true,
-                      drawHorizontalLine: true,
-                      horizontalInterval: 25,
-                      drawVerticalLine: false,
-                      getDrawingHorizontalLine: (value) {
-                        return FlLine(
-                          color: TColor.white.withOpacity(0.15),
-                          strokeWidth: 2,
-                        );
-                      },
-                    ),
-                    borderData: FlBorderData(
-                      show: true,
-                      border: Border.all(
-                        color: Colors.transparent,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ];
-        },
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
-              color: TColor.white,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: 50,
-                    height: 4,
-                    decoration: BoxDecoration(
-                        color: TColor.grey.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(3)),
-                  ),
-                  SizedBox(
-                    height: media.width * 0.05,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 15),
-                    decoration: BoxDecoration(
-                      color: TColor.primaryColor2.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Text(
-                        //   "Daily Workout Schedule",
-                        //   style: TextStyle(
-                        //       color: TColor.black,
-                        //       fontSize: 14,
-                        //       fontWeight: FontWeight.w700),
-                        // ),
-                        // SizedBox(
-                        //   width: 70,
-                        //   height: 25,
-                        //   child: RoundButton(
-                        //     title: "Check",
-                        //     type: RoundButtonType.bgGradient,
-                        //     fontSize: 12,
-                        //     fontWeight: FontWeight.w400,
-                        //     onPressed: () {
-                        //       // Navigator.push(
-                        //       //   context,
-                        //       //   MaterialPageRoute(
-                        //       //     builder: (context) =>
-                        //       //         const ActivityTrackerView(),
-                        //       //   ),
-                        //       // );
-                        //     },
-                        //   ),
-                        // )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: media.width * 0.05,
-                  ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Text(
-                  //       "Upcoming Workout",
-                  //       style: TextStyle(
-                  //           color: TColor.black,
-                  //           fontSize: 16,
-                  //           fontWeight: FontWeight.w700),
-                  //     ),
-                  //     TextButton(
-                  //       onPressed: () {},
-                  //       child: Text(
-                  //         "See More",
-                  //         style: TextStyle(
-                  //             color: TColor.grey,
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w700),
-                  //       ),
-                  //     )
-                  //   ],
-                  // ),
-                  // ListView.builder(
-                  //     padding: EdgeInsets.zero,
-                  //     physics: const NeverScrollableScrollPhysics(),
-                  //     shrinkWrap: true,
-                  //     itemCount: latestArr.length,
-                  //     itemBuilder: (context, index) {
-                  //       var wObj = latestArr[index] as Map? ?? {};
-                  //       return UpcomingWorkoutRow(wObj: wObj);
-                  //     }),
-                  SizedBox(
-                    height: media.width * 0.05,
-                  ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Text(
-                  //       "What Do You Want to Train",
-                  //       style: TextStyle(
-                  //           color: TColor.black,
-                  //           fontSize: 16,
-                  //           fontWeight: FontWeight.w700),
-                  //     ),
-                  //   ],
-                  // ),
-                  // ListView.builder(
-                  //     padding: EdgeInsets.zero,
-                  //     physics: const NeverScrollableScrollPhysics(),
-                  //     shrinkWrap: true,
-                  //     itemCount: whatArr.length,
-                  //     itemBuilder: (context, index) {
-                  //       var wObj = whatArr[index] as Map? ?? {};
-                  //       return InkWell(
-                  //           // onTap: () {
-                  //           //   Navigator.push(
-                  //           //       context,
-                  //           //       MaterialPageRoute(
-                  //           //           builder: (context) => WorkoutDetailView(
-                  //           //                 dObj: wObj,
-                  //           //               )));
-                  //           // },
-                  //           child: WhatTrainRow(wObj: wObj));
-                  //     }),
-                  SizedBox(
-                    height: media.width * 0.1,
-                  ),
-                ],
-              ),
-            ),
+    return Scaffold(
+      backgroundColor: TColor.lightGrey.withOpacity(0.4),
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false, // This will remove the back button
+        title: Text(
+          'Workout Tracker',
+          style: TextStyle(
+            color: TColor.black,
+            fontSize: 20,
           ),
         ),
+        backgroundColor:
+            TColor.primaryColor2.withOpacity(0.7), // Applying primary color
+        elevation: 0,
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: TColor.black, // Active tab color
+          unselectedLabelColor:
+              TColor.grey.withOpacity(0.5), // Inactive tab color
+          indicatorColor:
+              TColor.black.withOpacity(0.8), // Underline color for tabs
+          labelStyle: TextStyle(fontSize: 16),
+          tabs: [
+            Tab(text: 'Total Time Spent'),
+            Tab(text: 'Completed Workouts'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          TotalTimeSpentTab(userID: widget.userID),
+          CompletedWorkoutsTab(userID: widget.userID),
+        ],
       ),
     );
   }
+}
 
-  LineTouchData get lineTouchData1 => LineTouchData(
-        handleBuiltInTouches: true,
-        touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-        ),
-      );
+class FirebaseService {
+  final String userID;
 
-  List<LineChartBarData> get lineBarsData1 => [
-        lineChartBarData1_1,
-        lineChartBarData1_2,
-      ];
+  FirebaseService(this.userID);
 
-  LineChartBarData get lineChartBarData1_1 => LineChartBarData(
-        isCurved: true,
-        color: TColor.white,
-        barWidth: 4,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(1, 35),
-          FlSpot(2, 70),
-          FlSpot(3, 40),
-          FlSpot(4, 80),
-          FlSpot(5, 25),
-          FlSpot(6, 70),
-          FlSpot(7, 35),
-        ],
-      );
-
-  LineChartBarData get lineChartBarData1_2 => LineChartBarData(
-        isCurved: true,
-        color: TColor.white.withOpacity(0.5),
-        barWidth: 2,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: false,
-        ),
-        spots: const [
-          FlSpot(1, 80),
-          FlSpot(2, 50),
-          FlSpot(3, 90),
-          FlSpot(4, 40),
-          FlSpot(5, 80),
-          FlSpot(6, 35),
-          FlSpot(7, 60),
-        ],
-      );
-
-  SideTitles get rightTitles => SideTitles(
-        getTitlesWidget: rightTitleWidgets,
-        showTitles: true,
-        interval: 20,
-        reservedSize: 40,
-      );
-
-  Widget rightTitleWidgets(double value, TitleMeta meta) {
-    String text;
-    switch (value.toInt()) {
-      case 0:
-        text = '0%';
-        break;
-      case 20:
-        text = '20%';
-        break;
-      case 40:
-        text = '40%';
-        break;
-      case 60:
-        text = '60%';
-        break;
-      case 80:
-        text = '80%';
-        break;
-      case 100:
-        text = '100%';
-        break;
-      default:
-        return Container();
-    }
-
-    return Text(text,
-        style: TextStyle(
-          color: TColor.white,
-          fontSize: 12,
-        ),
-        textAlign: TextAlign.center);
+  Future<Map<String, dynamic>> fetchUserProfile() async {
+    DocumentSnapshot userProfile = await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(userID)
+        .get();
+    return userProfile.data() as Map<String, dynamic>;
   }
 
-  SideTitles get bottomTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 32,
-        interval: 1,
-        getTitlesWidget: bottomTitleWidgets,
-      );
+  Future<List<Map<String, dynamic>>> getCompletedWorkouts(String userId) async {
+    QuerySnapshot completedWorkoutsSnapshot = await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(userId)
+        .collection('completedWorkouts')
+        .get();
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    var style = TextStyle(
-      color: TColor.white,
-      fontSize: 12,
-    );
-    Widget text;
-    switch (value.toInt()) {
-      case 1:
-        text = Text('Sun', style: style);
-        break;
-      case 2:
-        text = Text('Mon', style: style);
-        break;
-      case 3:
-        text = Text('Tue', style: style);
-        break;
-      case 4:
-        text = Text('Wed', style: style);
-        break;
-      case 5:
-        text = Text('Thu', style: style);
-        break;
-      case 6:
-        text = Text('Fri', style: style);
-        break;
-      case 7:
-        text = Text('Sat', style: style);
-        break;
-      default:
-        text = const Text('');
-        break;
+    List<Map<String, dynamic>> completedWorkouts = completedWorkoutsSnapshot
+        .docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+
+    return completedWorkouts;
+  }
+
+  Future<Map<String, int>> fetchCompletedWorkoutsByWeek(String userId) async {
+    final now = DateTime.now().toUtc();
+
+    // Calculate the start and end of the current week, considering Sunday as the first day
+    final startOfWeekMonday = now.subtract(
+        Duration(days: now.weekday % 7)); // Monday of the current week
+    final endOfWeek = startOfWeekMonday
+        .add(Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
+    // Saturday of the current week
+
+    // Use startOfWeekSunday in your query
+    QuerySnapshot completedWorkoutsSnapshot = await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(userId)
+        .collection('completedWorkouts')
+        .where('completionDate', isGreaterThanOrEqualTo: startOfWeekMonday)
+        .where('completionDate', isLessThanOrEqualTo: endOfWeek)
+        .get();
+
+    Map<String, int> workoutsByDay = {
+      'Mon': 0,
+      'Tue': 0,
+      'Wed': 0,
+      'Thu': 0,
+      'Fri': 0,
+      'Sat': 0,
+      'Sun': 0
+    };
+
+    for (var doc in completedWorkoutsSnapshot.docs) {
+      final date =
+          (doc.data() as Map<String, dynamic>)['completionDate'].toDate();
+      final weekday = DateFormat('E').format(date);
+      workoutsByDay[weekday] = (workoutsByDay[weekday] ?? 0) + 1;
     }
 
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 10,
-      child: text,
+    return workoutsByDay;
+  }
+
+  Future<Map<String, List<String>>> fetchCompletedWorkoutsWithNamesByWeek(
+      String userId) async {
+    final now = DateTime.now().toUtc();
+
+    // Calculate the start and end of the current week, considering Sunday as the first day
+    final startOfWeekMonday = now.subtract(
+        Duration(days: now.weekday % 7)); // Monday of the current week
+    final endOfWeek = startOfWeekMonday
+        .add(Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
+    // Saturday of the current week
+
+    QuerySnapshot completedWorkoutsSnapshot = await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(userId)
+        .collection('completedWorkouts')
+        .where('completionDate', isGreaterThanOrEqualTo: startOfWeekMonday)
+        .where('completionDate', isLessThanOrEqualTo: endOfWeek)
+        .get();
+
+    Map<String, List<String>> workoutsWithNamesByDay = {
+      'Mon': [],
+      'Tue': [],
+      'Wed': [],
+      'Thu': [],
+      'Fri': [],
+      'Sat': [],
+      'Sun': []
+    };
+
+    for (var doc in completedWorkoutsSnapshot.docs) {
+      final date =
+          (doc.data() as Map<String, dynamic>)['completionDate'].toDate();
+      final workoutName = (doc.data() as Map<String, dynamic>)['workoutType'];
+      final weekday = DateFormat('E').format(date);
+      workoutsWithNamesByDay[weekday] = [
+        ...?workoutsWithNamesByDay[weekday],
+        workoutName
+      ];
+    }
+
+    return workoutsWithNamesByDay;
+  }
+
+  Future<Map<String, int>> getTotalTimeSpent() async {
+    QuerySnapshot timeSpentSnapshot = await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(userID)
+        .collection('totalTimeSpent')
+        .get();
+
+    Map<String, int> totalTimeSpent = {};
+    for (var doc in timeSpentSnapshot.docs) {
+      String workoutName = doc['workoutName'];
+      int time = doc['timeSpent'];
+      totalTimeSpent[workoutName] = (totalTimeSpent[workoutName] ?? 0) + time;
+    }
+    return totalTimeSpent;
+  }
+
+  // This function calculates the count of completed workouts for each type
+  Future<Map<String, int>> getCompletedWorkoutsCount() async {
+    QuerySnapshot completedWorkoutsSnapshot = await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(userID)
+        .collection('completedWorkouts')
+        .get();
+
+    Map<String, int> completedWorkoutsCount = {};
+
+    for (var doc in completedWorkoutsSnapshot.docs) {
+      String workoutName = doc['workoutType'];
+      completedWorkoutsCount[workoutName] =
+          (completedWorkoutsCount[workoutName] ?? 0) + 1;
+    }
+
+    return completedWorkoutsCount;
+  }
+}
+
+// ignore: must_be_immutable
+class TotalTimeSpentTab extends StatelessWidget {
+  final String userID;
+
+  List<String> workoutImages = [
+    'assets/imgMale/abs.png',
+    'assets/imgMale/back.png',
+    'assets/imgMale/chest.png',
+    'assets/imgMale/legs.png',
+    'assets/imgMale/fullbody.png',
+    'assets/imgMale/biceps.png',
+    'assets/imgMale/cardio.png',
+  ];
+
+  TotalTimeSpentTab({required this.userID});
+
+  @override
+  Widget build(BuildContext context) {
+    final totalTimeSpent = FirebaseService(userID).getTotalTimeSpent();
+
+    return FutureBuilder<Map<String, int>>(
+      future: totalTimeSpent,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          final data = snapshot.data!;
+          final int totalMinutes = data.values.fold(0, (a, b) => a + b);
+          final maxTime = data.values.fold(0, (a, b) => a > b ? a : b);
+          final sections =
+              _WorkoutTrackerState().generatePieChartSections(data);
+
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.23,
+                  child: PieChart(PieChartData(sections: sections)),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Available Workouts',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: TColor.grey,
+                  ),
+                ),
+
+                SizedBox(height: 8), // Spacing after dotted line
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: _WorkoutTrackerState().workoutTypes.length,
+                    separatorBuilder: (context, index) => DottedLine(
+                        dashLength: 4,
+                        dashGapLength: 4,
+                        lineThickness: 1,
+                        dashColor: TColor.black.withOpacity(
+                            0.4)), // This will add a dotted line between each workout
+
+                    itemBuilder: (context, index) {
+                      final workoutType =
+                          _WorkoutTrackerState().workoutTypes[index];
+                      final workoutColor =
+                          _WorkoutTrackerState().workoutColors[index];
+                      final workoutImage = workoutImages[index];
+                      final minutesSpent = data[workoutType] ?? 0;
+                      final percentage = ((minutesSpent / totalMinutes) * 100)
+                          .toStringAsFixed(1);
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 5.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(workoutImage),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8.0),
+                            Expanded(
+                              child: Text(
+                                workoutType,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: (minutesSpent == maxTime)
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Text(
+                              '($percentage% - ${minutesSpent}m)',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: (minutesSpent == maxTime)
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                            SizedBox(width: 8.0),
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: workoutColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+// class CompletedWorkoutsTab extends StatefulWidget {
+//   final String userID;
+
+//   CompletedWorkoutsTab({required this.userID});
+
+//   @override
+//   _CompletedWorkoutsTabState createState() => _CompletedWorkoutsTabState();
+// }
+
+// class _CompletedWorkoutsTabState extends State<CompletedWorkoutsTab> {
+//   List<String> daysOfTheWeek = [
+//     'Mon',
+//     'Tue',
+//     'Wed',
+//     'Thu',
+//     'Fri',
+//     'Sat',
+//     'Sun'
+//   ];
+
+//   List<String> workoutImages = [
+//     'assets/imgMale/abs.png',
+//     'assets/imgMale/back.png',
+//     'assets/imgMale/chest.png',
+//     'assets/imgMale/legs.png',
+//     'assets/imgMale/fullbody.png',
+//     'assets/imgMale/biceps.png',
+//     'assets/imgMale/cardio.png',
+//   ];
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // final completedWorkoutsByWeek = FirebaseService(widget.userID)
+//     //     .fetchCompletedWorkoutsByWeek(widget.userID);
+//     final completedWorkoutsWithNamesByWeek = FirebaseService(widget.userID)
+//         .fetchCompletedWorkoutsWithNamesByWeek(widget.userID);
+
+//     return FutureBuilder<Map<String, List<String>>>(
+//       future: completedWorkoutsWithNamesByWeek,
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return CircularProgressIndicator();
+//         } else if (snapshot.hasError) {
+//           return Text('Error: ${snapshot.error}');
+//         } else {
+//           final workoutsData = snapshot.data!;
+//           List<ColumnSeries<MapEntry<String, int>, String>> chartSeries = [];
+//           List<MapEntry<String, int>> chartDataSource = workoutsData.entries
+//               .map((e) => MapEntry(e.key, e.value.length))
+//               .toList();
+
+//           chartSeries.add(
+//             ColumnSeries<MapEntry<String, int>, String>(
+//               dataSource: chartDataSource,
+//               xValueMapper: (MapEntry<String, int> data, _) => data.key,
+//               yValueMapper: (MapEntry<String, int> data, _) => data.value,
+//               dataLabelSettings: DataLabelSettings(isVisible: true),
+//             ),
+//           );
+
+//           return Column(
+//             children: [
+//               Container(
+//                 height: 250.0,
+//                 width: double.infinity,
+//                 child: SfCartesianChart(
+//                   primaryXAxis: CategoryAxis(),
+//                   series: chartSeries,
+//                 ),
+//               ),
+//               SizedBox(height: 10), // Provide some spacing
+//               Text(
+//                 'Weekly Workout Summary',
+//                 style: TextStyle(
+//                   fontSize: 17,
+//                   fontWeight: FontWeight.w500,
+//                   color: TColor.grey,
+//                 ),
+//               ),
+//               SizedBox(height: 10),
+//               Expanded(
+//                 child: ListView.separated(
+//                   itemCount: workoutsData.length,
+//                   separatorBuilder: (context, index) => Padding(
+//                     padding: const EdgeInsets.symmetric(
+//                         horizontal:
+//                             15.0), // Adjust the horizontal value as per your requirement
+//                     child: DottedLine(
+//                       dashLength: 4,
+//                       dashGapLength: 4,
+//                       lineThickness: 1,
+//                       dashColor: TColor.black.withOpacity(0.4),
+//                     ),
+//                   ),
+//                   itemBuilder: (BuildContext context, int index) {
+//                     final entry = workoutsData.entries.elementAt(index);
+//                     final day = entry.key;
+//                     final workoutsList = entry.value;
+//                     final workoutsCount = workoutsList.length;
+//                     final dayIndex = daysOfTheWeek.indexOf(day);
+//                     final workoutImage =
+//                         (dayIndex >= 0 && dayIndex < workoutImages.length)
+//                             ? workoutImages[dayIndex]
+//                             : null;
+
+//                     return ListTile(
+//                       leading: workoutImage != null
+//                           ? Container(
+//                               width: 50, // Adjust width as per your requirement
+//                               height:
+//                                   50, // Adjust height as per your requirement
+//                               decoration: BoxDecoration(
+//                                 shape: BoxShape.circle,
+//                                 image: DecorationImage(
+//                                   fit: BoxFit.cover,
+//                                   image: AssetImage(workoutImage),
+//                                 ),
+//                               ),
+//                             )
+//                           : SizedBox(width: 40, height: 40),
+//                       title: Text('$day - $workoutsCount Workouts',
+//                           style: TextStyle(
+//                               fontSize:
+//                                   15.0) // Adjust font size as per your requirement
+//                           ),
+//                       subtitle: Text(workoutsList.join('\n'),
+//                           style: TextStyle(
+//                               fontSize:
+//                                   14.0) // Adjust font size as per your requirement
+//                           ),
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ],
+//           );
+//         }
+//       },
+//     );
+//   }
+// }
+
+class CompletedWorkoutsTab extends StatefulWidget {
+  final String userID;
+
+  CompletedWorkoutsTab({required this.userID});
+
+  @override
+  _CompletedWorkoutsTabState createState() => _CompletedWorkoutsTabState();
+}
+
+class _CompletedWorkoutsTabState extends State<CompletedWorkoutsTab> {
+  List<String> daysOfTheWeek = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun'
+  ];
+
+  List<String> workoutImages = [
+    'assets/imgMale/abs.png',
+    'assets/imgMale/back.png',
+    'assets/imgMale/chest.png',
+    'assets/imgMale/legs.png',
+    'assets/imgMale/fullbody.png',
+    'assets/imgMale/biceps.png',
+    'assets/imgMale/cardio.png',
+  ];
+
+  final List<Color> workoutColors = [
+    PColor.primaryColor1,
+    PColor.primaryColor2,
+    PColor.secondaryColor1,
+    PColor.secondaryColor2,
+    PColor.thirdColor1,
+    PColor.thirdColor2,
+    PColor.thirdColor3
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final completedWorkoutsWithNamesByWeek = FirebaseService(widget.userID)
+        .fetchCompletedWorkoutsWithNamesByWeek(widget.userID);
+
+    return FutureBuilder<Map<String, List<String>>>(
+      future: completedWorkoutsWithNamesByWeek,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final workoutsData = snapshot.data!;
+          List<ColumnSeries<MapEntry<String, int>, String>> chartSeries = [];
+          List<MapEntry<String, int>> chartDataSource = workoutsData.entries
+              .map((e) => MapEntry(e.key, e.value.length))
+              .toList();
+
+          chartSeries.add(
+            ColumnSeries<MapEntry<String, int>, String>(
+              dataSource: chartDataSource,
+              xValueMapper: (MapEntry<String, int> data, _) => data.key,
+              yValueMapper: (MapEntry<String, int> data, _) => data.value,
+              pointColorMapper: (MapEntry<String, int> data, _) =>
+                  workoutColors[
+                      daysOfTheWeek.indexOf(data.key)], // Color for each day
+              dataLabelSettings: DataLabelSettings(isVisible: true),
+            ),
+          );
+
+          return Column(
+            children: [
+              Container(
+                height: 250.0,
+                width: double.infinity,
+                child: SfCartesianChart(
+                  primaryXAxis: CategoryAxis(),
+                  series: chartSeries,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Weekly Workout Summary',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                  color: TColor.grey,
+                ),
+              ),
+              SizedBox(height: 10),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: workoutsData.length,
+                  separatorBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: DottedLine(
+                      dashLength: 4,
+                      dashGapLength: 4,
+                      lineThickness: 1,
+                      dashColor: TColor.black.withOpacity(0.4),
+                    ),
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    final entry = workoutsData.entries.elementAt(index);
+                    final day = entry.key;
+                    final workoutsList = entry.value;
+                    final workoutsCount = workoutsList.length;
+                    final dayIndex = daysOfTheWeek.indexOf(day);
+                    final workoutImage =
+                        (dayIndex >= 0 && dayIndex < workoutImages.length)
+                            ? workoutImages[dayIndex]
+                            : null;
+                    // final workoutColor = workoutColors[dayIndex];
+                    return ListTile(
+                      leading: workoutImage != null
+                          ? Container(
+                              width: 45, // Adjust width as per your requirement
+                              height:
+                                  45, // Adjust height as per your requirement
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(workoutImage),
+                                ),
+                              ),
+                            )
+                          : SizedBox(width: 40, height: 90),
+                      title: Text('$day - $workoutsCount Workouts',
+                          style: TextStyle(
+                              fontSize:
+                                  14.0) // Adjust font size as per your requirement
+                          ),
+                      subtitle: Text(workoutsList.join('\n'),
+                          style: TextStyle(
+                              fontSize:
+                                  14.0) // Adjust font size as per your requirement
+                          ),
+                      trailing: Container(
+                        width:
+                            40, // This constrains the width of the trailing widget
+                        child: Align(
+                          alignment: Alignment
+                              .center, // Aligns vertically in the center
+                          child: Container(
+                            width: 25,
+                            height: 25,
+                            decoration: BoxDecoration(
+                              color: (dayIndex >= 0 &&
+                                      dayIndex < workoutColors.length)
+                                  ? workoutColors[dayIndex]
+                                  : Colors.grey, // Fallback color
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 }

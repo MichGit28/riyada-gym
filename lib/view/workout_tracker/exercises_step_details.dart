@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
   late Map<String, dynamic> exerciseDetails;
   VideoPlayerController? _videoPlayerController;
   bool _showControls = true;
-  Timer? timer;
-  int timePassed = 0;
+  bool isWorkoutCompleted = false;
 
   @override
   void initState() {
@@ -55,39 +55,8 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
           });
   }
 
-  void startTimer() {
-    if (timer != null) {
-      timer!.cancel();
-    }
-
-    timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      setState(() {
-        timePassed++;
-      });
-    });
-  }
-
-  void pauseTimer() {
-    if (timer != null && timer!.isActive) {
-      timer!.cancel();
-    }
-  }
-
-  void stopTimer() {
-    if (timer != null) {
-      timer!.cancel();
-    }
-
-    setState(() {
-      timePassed = 0;
-    });
-  }
-
   @override
   void dispose() {
-    if (timer != null) {
-      timer!.cancel();
-    }
     super.dispose();
     _videoPlayerController?.dispose();
   }
@@ -357,61 +326,125 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                     const SizedBox(
                       height: 40,
                     ),
-                    // Center the Timer and the buttons
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .center, // center the items in the row
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 15),
+                      decoration: BoxDecoration(
+                          color: TColor.lightGrey,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black12, blurRadius: 2)
+                          ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Pause Button to the left of the timer
-                          gradientButton(label: "Pause", onPressed: pauseTimer),
-
-                          const SizedBox(
-                              width: 20), // Space between button and timer
-
-                          // Timer UI
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                  colors: TColor.primaryGradient,
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "${timePassed ~/ 60}:${(timePassed % 60).toString().padLeft(2, '0')}",
-                                style: TextStyle(
-                                    fontSize: 30, color: Colors.white),
-                              ),
+                          Text(
+                            "Exercise Completion",
+                            style: TextStyle(
+                              color: TColor.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-
                           const SizedBox(
-                              width: 20), // Space between timer and button
-
-                          // Stop Button to the right of the timer
-                          gradientButton(label: "Reset", onPressed: stopTimer),
+                            height: 8,
+                          ),
+                          SizedBox(
+                            height: 30,
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                      "assets/img/p_notification.png", // Replace with your desired icon if needed
+                                      height: 17,
+                                      width: 17,
+                                      fit: BoxFit.contain),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      "Mark Exercise as Completed",
+                                      style: TextStyle(
+                                        color: TColor.black,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  CustomAnimatedToggleSwitch<bool>(
+                                    current: isWorkoutCompleted,
+                                    values: [false, true],
+                                    dif: 0.0,
+                                    indicatorSize: Size.square(30.0),
+                                    animationDuration:
+                                        const Duration(milliseconds: 200),
+                                    animationCurve: Curves.linear,
+                                    iconBuilder: (context, local, global) {
+                                      return const SizedBox();
+                                    },
+                                    defaultCursor: SystemMouseCursors.click,
+                                    onTap: () {
+                                      setState(() {
+                                        isWorkoutCompleted =
+                                            !isWorkoutCompleted;
+                                      });
+                                    },
+                                    iconsTappable: false,
+                                    wrapperBuilder: (context, global, child) {
+                                      return Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Positioned(
+                                              left: 10.0,
+                                              right: 10.0,
+                                              height: 30.0,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                  gradient: isWorkoutCompleted
+                                                      ? LinearGradient(
+                                                          colors: TColor
+                                                              .secondaryGradient)
+                                                      : LinearGradient(colors: [
+                                                          Colors.grey,
+                                                          Colors.grey[400]!
+                                                        ]),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(
+                                                              50.0)),
+                                                ),
+                                              )),
+                                          child,
+                                        ],
+                                      );
+                                    },
+                                    foregroundIndicatorBuilder:
+                                        (context, global) {
+                                      return SizedBox.fromSize(
+                                        size: const Size(10, 10),
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color: TColor.white,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                  color: Colors.black38,
+                                                  spreadRadius: 0.05,
+                                                  blurRadius: 1.1,
+                                                  offset: Offset(0.0, 0.8))
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ]),
+                          ),
                         ],
                       ),
-                    ),
-
-                    const SizedBox(height: 25),
-
-                    // Start Workout button
-                    Padding(
-                      padding: const EdgeInsets.all(9.0),
-                      child: RoundButton(
-                        title: "Start Workout",
-                        onPressed: startTimer,
-                      ),
-                    ),
-
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    )
                   ],
                 ),
               ),

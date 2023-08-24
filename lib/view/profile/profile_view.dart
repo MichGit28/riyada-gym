@@ -103,7 +103,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: TColor.white,
+        backgroundColor: TColor.lightGrey.withOpacity(0.1),
         centerTitle: true,
         elevation: 0,
         leadingWidth: 0,
@@ -113,7 +113,7 @@ class _ProfileViewState extends State<ProfileView> {
               color: TColor.black, fontSize: 20, fontWeight: FontWeight.w700),
         ),
       ),
-      backgroundColor: TColor.white,
+      backgroundColor: TColor.lightGrey.withOpacity(0.5),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),

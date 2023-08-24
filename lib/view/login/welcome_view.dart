@@ -5,6 +5,8 @@ import '../../common_widget/round_button.dart';
 //import '../main_tab/main_tab_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../main_tab/main_tab_view.dart';
+
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});
 
@@ -56,10 +58,8 @@ class _WelcomeViewState extends State<WelcomeView> {
               RoundButton(
                   title: "Go To Home",
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginView()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MainTabView()));
                   }),
             ],
           ),

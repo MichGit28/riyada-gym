@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../home/home_view.dart';
 import '../profile/profile_view.dart';
 import '../workout_tracker/workout_tracker_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MainTabView extends StatefulWidget {
   const MainTabView({super.key});
@@ -50,8 +51,11 @@ class _MainTabViewState extends State<MainTabView> {
                 selectIcon: "assets/img/activity_tab_select.png",
                 isActive: selectTab == 1,
                 onTap: () {
+                  final user = FirebaseAuth.instance.currentUser;
+                  final String currentUserId = user?.uid ?? '';
                   selectTab = 1;
-                  currentTab = const WorkoutTrackerView();
+                  currentTab = WorkoutTracker(userID: currentUserId);
+
                   if (mounted) {
                     setState(() {});
                   }

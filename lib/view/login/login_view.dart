@@ -1,7 +1,9 @@
 // ignore_for_file: unused_import
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/round_button.dart';
 import 'package:riyada_gym/common_widget/round_textfield.dart';
@@ -24,6 +26,21 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // Future<void> login(BuildContext context) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: emailController.text,
+  //       password: passwordController.text,
+  //     );
+
+  //     // Check if login was successful
+  //     if (userCredential.user != null) {
+  //       // Navigate to the home page or any other desired page
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const MainTabView()),
+  //       );
   Future<void> login(BuildContext context) async {
     try {
       UserCredential userCredential =
@@ -34,6 +51,14 @@ class _LoginViewState extends State<LoginView> {
 
       // Check if login was successful
       if (userCredential.user != null) {
+        // Call the function to delete old workouts
+        try {
+          await deletePreviousWeekWorkouts(userCredential.user!.uid);
+        } catch (e) {
+          print("Error deleting old workouts: $e");
+          // Optionally show a user-friendly message to the user
+        }
+
         // Navigate to the home page or any other desired page
         Navigator.push(
           context,
@@ -72,6 +97,95 @@ class _LoginViewState extends State<LoginView> {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  // Future<void> deleteLastWeekWorkouts(String currentUserId) async {
+  //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //   // CollectionReference workoutsCollection =
+  //   //     _firestore.collection('completedWorkouts');
+  //   CollectionReference workoutsCollection = _firestore
+  //       .collection('userProfiles')
+  //       .doc(currentUserId)
+  //       .collection('completedWorkouts');
+
+  //   DateTime now = DateTime.now();
+  //   // Sunday is start of the week
+  //   // DateTime startDateOfWeek =
+  //   //     now.subtract(Duration(days: (now.weekday % 7) + 1));
+  //   DateTime startDateOfWeek = now.subtract(Duration(days: now.weekday + 6));
+  //   QuerySnapshot workoutsToDelete = await workoutsCollection
+  //       .where('completionDate',
+  //           isLessThan: DateFormat('MMMM d, yyyy').format(startDateOfWeek))
+  //       .where('userID',
+  //           isEqualTo:
+  //               currentUserId) // Assuming you store user id with the workout
+  //       .get();
+
+  //   for (QueryDocumentSnapshot workout in workoutsToDelete.docs) {
+  //     await workoutsCollection.doc(workout.id).delete();
+  //   }
+  // }
+
+  // Future<void> deleteLastWeekWorkouts(String currentUserId) async {
+  //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //   CollectionReference workoutsCollection = _firestore
+  //       .collection('userProfiles')
+  //       .doc(currentUserId)
+  //       .collection('completedWorkouts');
+
+  //   DateTime now = DateTime.now();
+  //   DateTime startDateOfWeek = now.subtract(Duration(days: now.weekday + 6));
+
+  //   // Print the calculated date for debugging
+  //   print(
+  //       "Start Date of Week: ${DateFormat('MMMM d, yyyy').format(startDateOfWeek)}");
+
+  //   QuerySnapshot workoutsToDelete = await workoutsCollection
+  //       .where('completionDate',
+  //           isLessThan: startDateOfWeek) // Directly using DateTime object
+  //       .where('userID', isEqualTo: currentUserId)
+  //       .get();
+
+  //   // Print number of documents found
+  //   print("Number of workouts to delete: ${workoutsToDelete.docs.length}");
+
+  //   for (QueryDocumentSnapshot workout in workoutsToDelete.docs) {
+  //     try {
+  //       await workoutsCollection.doc(workout.id).delete();
+  //       // Print each document ID as it's deleted
+  //       print("Deleted workout with ID: ${workout.id}");
+  //     } catch (e) {
+  //       // Catch any errors during the delete operation
+  //       print("Error deleting workout with ID: ${workout.id}. Error: $e");
+  //     }
+  //   }
+  // }
+
+  Future<void> deletePreviousWeekWorkouts(String currentUserId) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    CollectionReference workoutsCollection = _firestore
+        .collection('userProfiles')
+        .doc(currentUserId)
+        .collection('completedWorkouts');
+
+    DateTime now = DateTime.now();
+    int daysToSubtract = (now.weekday % 7) +
+        1; // Determines the number of days to go back to the last Sunday.
+    DateTime startOfThisWeek = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: daysToSubtract));
+
+    print("Start Date of This Week: $startOfThisWeek");
+
+    QuerySnapshot workoutsToDelete = await workoutsCollection
+        .where('completionDate', isLessThan: startOfThisWeek)
+        .get();
+
+    print("Number of workouts to delete: ${workoutsToDelete.docs.length}");
+
+    for (QueryDocumentSnapshot workout in workoutsToDelete.docs) {
+      await workoutsCollection.doc(workout.id).delete();
     }
   }
 

@@ -80,6 +80,7 @@ class _SignUpViewState extends State<SignUpView> {
               .collection('userProfiles')
               .doc(user.uid)
               .set({
+            'userID': user.uid,
             'firstName': firstNameController.text,
             'lastName': lastNameController.text,
             'email': emailController.text,

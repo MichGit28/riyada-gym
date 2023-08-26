@@ -13,7 +13,8 @@ import 'package:flutter/foundation.dart'
 /// await Firebase.initializeApp(
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
-/// ```
+
+// this app is created by the FlutterFire CLI and it is used to initialize the firebase app
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {

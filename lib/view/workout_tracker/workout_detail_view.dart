@@ -13,6 +13,8 @@ import '../main_tab/main_tab_view.dart';
 
 enum ItemType { SetLabel, Exercise, Spacer }
 
+// we use this class to create a workout detail view
+// this is where the user can see the workout details and start the workout
 class WorkoutDetailView extends StatefulWidget {
   final Map<String, dynamic> workoutData;
   final String workoutType;
@@ -30,11 +32,11 @@ class WorkoutDetailView extends StatefulWidget {
 }
 
 class _WorkoutDetailViewState extends State<WorkoutDetailView> {
-  // Firestore instance
+  // firestore instance
   final _firestore = FirebaseFirestore.instance;
   final scheduleController = TextEditingController();
   final difficultyController = TextEditingController();
-  // Start with loading state
+  // start with loading state
   bool isLoading = true;
   // determine if the workout is completed
   bool isWorkoutCompleted = false;
@@ -45,7 +47,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
 
   void startTimer() {
     if (timer != null) {
-      timer!.cancel(); // Cancel any running timer before starting a new one.
+      timer!.cancel(); // cancel any running timer before starting a new one.
     }
 
     timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
@@ -66,7 +68,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
       timer!.cancel();
     }
 
-    // Check for user
+    // check for user
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       print("Error: No current user found.");
@@ -97,6 +99,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
         DocumentSnapshot doc = snapshot.docs.first;
         await doc.reference.update({
           'timeSpent': elapsedTime.inSeconds + (doc['timeSpent'] ?? 0),
+          'completionDate': Timestamp.now(), // Add this line
         });
       }
       // If the document doesn't exist, create a new one
@@ -104,6 +107,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
         await totalTimeSpentRef.add({
           'workoutName': workoutName,
           'timeSpent': elapsedTime.inSeconds,
+          'completionDate': Timestamp.now(), // Add this line
         });
       }
     } catch (e) {
@@ -116,6 +120,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
     });
   }
 
+  // we use this function to dispose the timer when the user leaves the page
   @override
   void dispose() {
     if (timer != null) {
@@ -212,7 +217,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                           .doc(uid)
                           .collection('completedWorkouts')
                           .doc(completedWorkouts.docs.first
-                              .id) // Assuming only one entry per week
+                              .id) // assuming only one entry per week
                           .delete();
                       setState(() {
                         isWorkoutCompleted = false;
@@ -232,12 +237,9 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
           );
         }
       } else {
-        // If the user is trying to mark it as completed
+        // if the user is trying to mark it as completed
         if (completedWorkouts.docs.isEmpty) {
-          // Extracting day name from the DateTime object
-          // String dayName = DateFormat('EEEE')
-          //     .format(now);
-          // // EEEE format gives full day name like "Monday"
+          // extracting day name from the DateTime object
           String abbreviatedDayName = DateFormat('E').format(now);
           await _firestore
               .collection('userProfiles')

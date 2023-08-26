@@ -29,7 +29,7 @@ class _WhatYourGoalViewState extends State<WhatYourGoalView> {
     },
     {
       "image": "assets/img/goal_3.png",
-      "title": "Lose a Fat",
+      "title": "Lose Fat",
       "subtitle":
           "I have over 10 KGs to lose. I want to\ndrop all this fat and gain muscle\nmass"
     },

@@ -8,6 +8,7 @@ import 'package:video_player/video_player.dart';
 import '../../common/color_extension.dart';
 import '../../common_widget/step_detail_row.dart';
 
+// this class represents the details of the exercises and how to do them
 class ExercisesStepDetails extends StatefulWidget {
   final String workoutType;
   final String exerciseName;
@@ -25,10 +26,12 @@ class ExercisesStepDetails extends StatefulWidget {
 }
 
 class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
+  // indicates if the page is loading
   bool isLoading = true;
   late Map<String, dynamic> exerciseDetails;
   VideoPlayerController? _videoPlayerController;
   bool _showControls = true;
+  // indicates if the workout is completed
   bool isWorkoutCompleted = false;
 
   @override
@@ -38,10 +41,10 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
     _videoPlayerController =
         _videoPlayerController = VideoPlayerController.asset(widget.videoPath)
           ..initialize().then((_) {
-            // Ensure the first frame is shown and set state to refresh the widget.
+            // ensure the first frame is shown and set state to refresh the widget.
             _videoPlayerController!.addListener(() {
               setState(
-                  () {}); // <-- This is to ensure UI refreshes on video state change
+                  () {}); // <-- this is to ensure UI refreshes on video state change
 
               if (_videoPlayerController!.value.position ==
                   _videoPlayerController!.value.duration) {
@@ -58,6 +61,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
     _videoPlayerController?.dispose();
   }
 
+  // this method is used to get the details of the exercise from Firestore database
   Future<void> getExerciseDetails() async {
     final _firestore = FirebaseFirestore.instance;
     DocumentReference workoutRef =
@@ -87,11 +91,13 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
       }
     } else {
       setState(() {
-        isLoading = false; // Also update loading state if doc doesn't exist
+        isLoading =
+            false; // update loading state if document doesn't exist in database
       });
     }
   }
 
+  // this method is used to generate the steps of the exercise
   List<Widget> _generateSteps() {
     var steps = exerciseDetails['howTo'] as Map<String, dynamic>;
     var keys = steps.keys.toList();
@@ -118,7 +124,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(20), // Adjust for rounded edges
+        borderRadius: BorderRadius.circular(20), // rounded edges
         boxShadow: const [
           BoxShadow(
             color: Colors.black26,
@@ -132,7 +138,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius:
-              BorderRadius.circular(20), // Match parent's borderRadius
+              BorderRadius.circular(20), // match parent's borderRadius
           onTap: onPressed,
           child: Center(
             child: Text(
@@ -151,7 +157,6 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
 
   @override
   Widget build(BuildContext context) {
-    //var media = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: TColor.white,
@@ -251,13 +256,13 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                       exerciseDetails['name'] ?? 'Unknown Exercise',
                       style: TextStyle(
                           color: TColor.primaryColor1,
-                          fontSize:
-                              20, // you can adjust the font size as per your design needs
+                          fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(
                       height: 15,
                     ),
+                    // exercise description section
                     Text(
                       "Description",
                       style: TextStyle(
@@ -268,11 +273,11 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                     const SizedBox(
                       height: 4,
                     ),
+                    // description text from the database
                     ReadMoreText(
                       exerciseDetails['description'] ??
                           'Description not available',
                       trimLines: 2,
-                      // colorClickableText: TColor.primaryColor1,
                       trimMode: TrimMode.Line,
                       trimCollapsedText: 'Show more',
                       trimExpandedText: 'Show less',
@@ -309,7 +314,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                           ),
                         Align(
                           alignment: Alignment
-                              .centerRight, // This aligns the child to the right
+                              .centerRight, // aligns the child to the right
                           child: Text(
                             "4 Sets",
                             style: TextStyle(color: TColor.grey, fontSize: 14),

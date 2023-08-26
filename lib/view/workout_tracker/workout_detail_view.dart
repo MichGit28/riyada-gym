@@ -489,14 +489,6 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700),
                             ),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                "${2} Sets",
-                                style:
-                                    TextStyle(color: TColor.grey, fontSize: 16),
-                              ),
-                            )
                           ],
                         ),
                         ListView.builder(

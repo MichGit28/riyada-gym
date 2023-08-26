@@ -170,12 +170,12 @@ class _WorkoutTrackerState extends State<WorkoutTracker>
   }
 }
 
-// tis FirebaseService class will be used to fetch data from Firebase Firestore database
+// this FirebaseService class will be used to fetch data from Firebase Firestore database
 class FirebaseService {
   final String userID;
 
   FirebaseService(this.userID);
-  // Future is used to represent a potential value, or error, that will be available at some time in the future
+  // future is used to represent a potential value, or error, that will be available at some time in the future
   Future<Map<String, dynamic>> fetchUserProfile() async {
     DocumentSnapshot userProfile = await FirebaseFirestore.instance
         .collection('userProfiles')

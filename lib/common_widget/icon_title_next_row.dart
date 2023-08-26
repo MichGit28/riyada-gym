@@ -55,7 +55,7 @@ class IconTitleNextRow extends StatelessWidget {
                 style: TextStyle(color: TColor.grey, fontSize: 12),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 0),
             SizedBox(
               width: 25,
               height: 25,
@@ -63,12 +63,6 @@ class IconTitleNextRow extends StatelessWidget {
                 width: 25,
                 height: 25,
                 alignment: Alignment.center,
-                child: Image.asset(
-                  "assets/img/p_next.png",
-                  width: 12,
-                  height: 12,
-                  fit: BoxFit.contain,
-                ),
               ),
             )
           ],

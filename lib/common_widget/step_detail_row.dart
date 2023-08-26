@@ -66,10 +66,6 @@ class StepDetailRow extends StatelessWidget {
                   fontSize: 14,
                 ),
               ),
-              // Text(
-              //   sObj["detail"].toString(),
-              //   style: TextStyle(color: TColor.grey, fontSize: 12),
-              // ),
             ],
           ),
         )

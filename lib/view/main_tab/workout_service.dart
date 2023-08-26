@@ -24,6 +24,4 @@ class WorkoutService {
       }
     });
   }
-
-  // More Firestore methods related to workouts here, e.g. fetchWorkouts, deleteWorkout, etc.
 }

@@ -6,7 +6,7 @@ import 'package:riyada_gym/view/main_tab/select_view.dart';
 import 'package:flutter/material.dart';
 import '../home/home_view.dart';
 import '../profile/profile_view.dart';
-import '../workout_tracker/workout_tracker_view.dart';
+import '../workout_tracker/workout_tracker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MainTabView extends StatefulWidget {

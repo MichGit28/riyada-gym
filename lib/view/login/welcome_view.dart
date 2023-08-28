@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../../common/color_extension.dart';
 import '../../common_widget/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../main_tab/main_tab_view.dart';
 
+// this class is used to display a welcome message to the user after he logs in for the first time
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});
 

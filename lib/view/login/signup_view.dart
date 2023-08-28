@@ -137,6 +137,7 @@ class _SignUpViewState extends State<SignUpView> {
     }
   }
 
+  // this method is used to show an error dialog if the email is invalid
   void showInvalidEmailDialog() {
     showDialog(
       context: context,

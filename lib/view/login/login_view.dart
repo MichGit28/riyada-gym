@@ -1,18 +1,14 @@
-// ignore_for_file: unused_import
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/round_button.dart';
 import 'package:riyada_gym/common_widget/round_textfield.dart';
-import 'package:riyada_gym/view/home/home_view.dart';
-import 'package:riyada_gym/view/login/complete_profile.dart';
 import 'package:riyada_gym/view/login/reset_password_view.dart';
 import 'package:riyada_gym/view/login/signup_view.dart';
 import 'package:riyada_gym/view/main_tab/main_tab_view.dart';
 
+// this is te login page that prompts the user to enter his email and password
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
@@ -93,6 +89,7 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  // Function to delete workouts from previous weeks (i.e., before the current week) on login from the database
   Future<void> deletePreviousWeekWorkouts(String currentUserId) async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -120,6 +117,7 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  // Function to delete totalTimeSpent from previous weeks (i.e., before the current week) on login from the database
   Future<void> deletePreviousWeekTimeSpent(String currentUserId) async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -150,6 +148,7 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  // dispose the controllers when the widget is disposed
   @override
   void dispose() {
     emailController.dispose();

@@ -2,6 +2,7 @@ import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:flutter/material.dart';
 import '../common/color_extension.dart';
 
+// this is a helper widget that is used in other ExerciseStepDetail to display a step detail row
 class StepDetailRow extends StatelessWidget {
   final Map sObj;
   final bool isLast;

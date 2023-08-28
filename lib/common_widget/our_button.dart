@@ -3,6 +3,7 @@ import '../common/color_extension.dart';
 
 enum OurButtonType { bgGradient, textGradient }
 
+// this is a helper widget that is used in other widgets to display a round button for other widgets
 class OurButton extends StatelessWidget {
   final String title;
   final OurButtonType type;

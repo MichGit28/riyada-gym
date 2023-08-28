@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../common/color_extension.dart';
 import '../../common_widget/round_button.dart';
 
+// this class prompts the user to choose his goal from 3 options
 class WhatYourGoalView extends StatefulWidget {
   const WhatYourGoalView({super.key});
 
@@ -44,6 +45,7 @@ class _WhatYourGoalViewState extends State<WhatYourGoalView> {
           child: Stack(
         children: [
           Center(
+            // we're using carousel slider to display the 3 options to the user
             child: CarouselSlider(
               items: goalArr
                   .map(

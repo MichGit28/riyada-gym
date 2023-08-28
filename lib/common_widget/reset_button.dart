@@ -3,6 +3,7 @@ import '../common/color_extension.dart';
 
 enum ResetButtonType { bgGradient, textGradient }
 
+// this is a helper widget that is used to display a reset button
 class ResetButton extends StatelessWidget {
   final String title;
   final ResetButtonType type;

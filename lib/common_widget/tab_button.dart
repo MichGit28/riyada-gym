@@ -1,6 +1,7 @@
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:flutter/material.dart';
 
+// this is a helper widget that is used in other widgets to display a tab button with an icon and a select icon
 class TabButton extends StatelessWidget {
   final String icon;
   final String selectIcon;

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/round_button.dart';
-//import 'package:riyada_gym/view/login/login_view.dart';
 import 'package:riyada_gym/view/login/what_your_goal_view.dart';
-//import '../../common_widget/round_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
+// this class prompts the user to complete his profile after signing up
 class CompleteProfileView extends StatefulWidget {
   const CompleteProfileView({super.key});
 

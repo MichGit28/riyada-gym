@@ -374,6 +374,7 @@ class _ExercisesStepDetailsState extends State<ExercisesStepDetails> {
                                       ),
                                     ),
                                   ),
+                                  // CustomAnimatedToggleSwitch is used to create a toggle switch
                                   CustomAnimatedToggleSwitch<bool>(
                                     current: isWorkoutCompleted,
                                     values: [false, true],

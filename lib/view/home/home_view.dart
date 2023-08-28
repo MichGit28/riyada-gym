@@ -8,6 +8,7 @@ import '../login/user_profile.dart';
 import '../main_tab/workout_service.dart';
 import 'dart:math' as math;
 
+// this class is the home page of the app that contains the 3 tabs
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 

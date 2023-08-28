@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../common/color_extension.dart';
 
+// this is a helper widget that is used to display a title and a subtitle in a card
 class TitleSubtitleCell extends StatelessWidget {
   final String title;
   final String subtitle;

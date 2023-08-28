@@ -1,14 +1,12 @@
-// ignore_for_file: unused_import
-
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/tab_button.dart';
-import 'package:riyada_gym/view/main_tab/select_view.dart';
 import 'package:flutter/material.dart';
 import '../home/home_view.dart';
 import '../profile/profile_view.dart';
 import '../workout_tracker/workout_tracker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// this is the main tab view that contains the 3 main views of the app (home, workout tracker, profile)
 class MainTabView extends StatefulWidget {
   const MainTabView({super.key});
 

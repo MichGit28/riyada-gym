@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/color_extension.dart';
 import 'package:riyada_gym/common_widget/reset_button.dart';
-// ignore: unused_import
-import 'package:riyada_gym/common_widget/round_button.dart';
 import 'package:riyada_gym/common_widget/round_textfield.dart';
 import 'dart:ui';
 
+// this class prompts the user to enter his email to send him a password reset email
 class ResetPasswordView extends StatefulWidget {
   const ResetPasswordView({Key? key}) : super(key: key);
 

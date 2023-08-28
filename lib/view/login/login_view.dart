@@ -148,7 +148,6 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  // dispose the controllers when the widget is disposed
   @override
   void dispose() {
     emailController.dispose();

@@ -4,7 +4,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:riyada_gym/common/app_colors.dart';
 import 'package:riyada_gym/common/color_extension.dart';
-// import 'package:riyada_gym/presentation/resources/app_resources.dart';
 import 'package:intl/intl.dart';
 import '../../common/colors_app.dart';
 import '../../common/dotted_line.dart';
@@ -126,52 +125,6 @@ class _WorkoutTrackerState extends State<WorkoutTracker>
       );
     });
   }
-
-//   // our build widget is where we define the widget's UI and behavior of the screen
-//   @override
-//   Widget build(BuildContext context) {
-//     // Scaffold is a widget from the Material library that provides a default app barm
-//     // title and a body property that holds the widget tree for the home screen
-//     return Scaffold(
-//       backgroundColor: TColor.lightGrey.withOpacity(0.4),
-//       appBar: AppBar(
-//         centerTitle: true,
-//         automaticallyImplyLeading: false, // this will remove the back button
-//         title: Text(
-//           'Workout Tracker',
-//           style: TextStyle(
-//             color: TColor.black,
-//             fontSize: 20,
-//           ),
-//         ),
-
-//         backgroundColor:
-//             TColor.primaryColor2.withOpacity(0.7), // applying primary color
-//         elevation: 0,
-//         bottom: TabBar(
-//           controller: _tabController,
-//           labelColor: TColor.black, // active tab color
-//           unselectedLabelColor:
-//               TColor.grey.withOpacity(0.5), // inactive tab color
-//           indicatorColor:
-//               TColor.black.withOpacity(0.8), // underline color for tabs
-//           labelStyle: TextStyle(fontSize: 16),
-//           tabs: [
-//             Tab(text: 'Total Time Spent'),
-//             Tab(text: 'Completed Workouts'),
-//           ],
-//         ),
-//       ),
-//       body: TabBarView(
-//         controller: _tabController,
-//         children: [
-//           TotalTimeSpentTab(userID: widget.userID),
-//           CompletedWorkoutsTab(userID: widget.userID),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
   @override
   Widget build(BuildContext context) {

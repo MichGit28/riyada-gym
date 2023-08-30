@@ -62,7 +62,7 @@ class _StartedViewState extends State<StartedView> {
                 ],
               ),
               Text(
-                "Everyone can Train",
+                "Sweat Today - Shine Tomorrow",
                 style: TextStyle(
                   color: TColor.grey,
                   fontSize: 18,

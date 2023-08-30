@@ -10,6 +10,8 @@ import '../../common/colors_app.dart';
 import '../../common/dotted_line.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../home/notification_view.dart';
+
 // statefulWidget is essentially the blurprint for a widget that has mutable state(can change over time)
 // It can be considered as the "static" part of your widget
 class WorkoutTracker extends StatefulWidget {
@@ -125,10 +127,55 @@ class _WorkoutTrackerState extends State<WorkoutTracker>
     });
   }
 
-  // our build widget is where we define the widget's UI and behavior of the screen
+//   // our build widget is where we define the widget's UI and behavior of the screen
+//   @override
+//   Widget build(BuildContext context) {
+//     // Scaffold is a widget from the Material library that provides a default app barm
+//     // title and a body property that holds the widget tree for the home screen
+//     return Scaffold(
+//       backgroundColor: TColor.lightGrey.withOpacity(0.4),
+//       appBar: AppBar(
+//         centerTitle: true,
+//         automaticallyImplyLeading: false, // this will remove the back button
+//         title: Text(
+//           'Workout Tracker',
+//           style: TextStyle(
+//             color: TColor.black,
+//             fontSize: 20,
+//           ),
+//         ),
+
+//         backgroundColor:
+//             TColor.primaryColor2.withOpacity(0.7), // applying primary color
+//         elevation: 0,
+//         bottom: TabBar(
+//           controller: _tabController,
+//           labelColor: TColor.black, // active tab color
+//           unselectedLabelColor:
+//               TColor.grey.withOpacity(0.5), // inactive tab color
+//           indicatorColor:
+//               TColor.black.withOpacity(0.8), // underline color for tabs
+//           labelStyle: TextStyle(fontSize: 16),
+//           tabs: [
+//             Tab(text: 'Total Time Spent'),
+//             Tab(text: 'Completed Workouts'),
+//           ],
+//         ),
+//       ),
+//       body: TabBarView(
+//         controller: _tabController,
+//         children: [
+//           TotalTimeSpentTab(userID: widget.userID),
+//           CompletedWorkoutsTab(userID: widget.userID),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
   @override
   Widget build(BuildContext context) {
-    // Scaffold is a widget from the Material library that provides a default app barm
+    // Scaffold is a widget from the Material library that provides a default app bar,
     // title and a body property that holds the widget tree for the home screen
     return Scaffold(
       backgroundColor: TColor.lightGrey.withOpacity(0.4),
@@ -142,6 +189,7 @@ class _WorkoutTrackerState extends State<WorkoutTracker>
             fontSize: 20,
           ),
         ),
+
         backgroundColor:
             TColor.primaryColor2.withOpacity(0.7), // applying primary color
         elevation: 0,
@@ -158,6 +206,24 @@ class _WorkoutTrackerState extends State<WorkoutTracker>
             Tab(text: 'Completed Workouts'),
           ],
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationView(),
+                ),
+              );
+            },
+            icon: Image.asset(
+              "assets/img/notification_active.png",
+              width: 25,
+              height: 25,
+              fit: BoxFit.fitHeight,
+            ),
+          ),
+        ],
       ),
       body: TabBarView(
         controller: _tabController,

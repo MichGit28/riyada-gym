@@ -1,5 +1,7 @@
-Riyada-Gym - Flutter Fitness App
 ![dumbbells](https://github.com/MichGit28/riyada-gym/assets/78900942/b3ea5061-b9bc-4c38-b6a3-430230c4c697)
+
+
+Riyada-Gym - Flutter Fitness App
 
 Riyada-Gym is a mobile fitness application designed to help users maintain an active lifestyle. This app provides a variety of workouts tailored to meet the unique needs of each user. Each workout comes with a set of exercises, complete with a short instructional video, a description, and step-by-step instructions on how to perform the exercise properly.
 
